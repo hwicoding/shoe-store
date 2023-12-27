@@ -9,24 +9,30 @@ import java.awt.Color;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class BuyPage extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JLabel lblNewLabel;
+	private JLabel lblImage;
 	private JLabel lblNewLabel_1;
-	private JTextField textField;
+	private JTextField tfBrand;
 	private JLabel lblNewLabel_1_1;
-	private JTextField textField_1;
+	private JTextField tfName;
 	private JLabel lblNewLabel_1_1_1;
-	private JTextField textField_2;
+	private JTextField tfPrice;
 	private JLabel lblNewLabel_1_1_1_1;
 	private JLabel lblNewLabel_1_1_1_1_1;
-	private JComboBox comboBox;
-	private JComboBox comboBox_1;
 	private JButton btnNewButton;
 	private JButton btnNewButton_2;
 	private JLabel lblNewLabel_2;
+	private JLabel lblNewLabel_1_1_1_1_2;
+	private JTextField tfSize;
+	private JTextField tfCount;
+	private JTextField tfColor;
+	private JLabel lblNewLabel;
+	private JTextField tfSeqno;
 
 	/**
 	 * Launch the application.
@@ -49,107 +55,109 @@ public class BuyPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public BuyPage() {
+		getContentPane().setEnabled(false);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				
+				//selectByinfo( );
+				
+			}
+		});
 		setTitle("구매 페이지");
 		setBounds(100, 100, 973, 489);
 		getContentPane().setLayout(null);
-		getContentPane().add(getLblNewLabel());
+		getContentPane().add(getLblImage());
 		getContentPane().add(getLblNewLabel_1());
-		getContentPane().add(getTextField());
+		getContentPane().add(getTfBrand());
 		getContentPane().add(getLblNewLabel_1_1());
-		getContentPane().add(getTextField_1());
+		getContentPane().add(getTfName());
 		getContentPane().add(getLblNewLabel_1_1_1());
-		getContentPane().add(getTextField_2());
+		getContentPane().add(getTfPrice());
 		getContentPane().add(getLblNewLabel_1_1_1_1());
 		getContentPane().add(getLblNewLabel_1_1_1_1_1());
-		getContentPane().add(getComboBox());
-		getContentPane().add(getComboBox_1());
 		getContentPane().add(getBtnNewButton());
 		getContentPane().add(getBtnNewButton_2());
 		getContentPane().add(getLblNewLabel_2());
+		getContentPane().add(getLblNewLabel_1_1_1_1_2());
+		getContentPane().add(getTfSize());
+		getContentPane().add(getTfCount());
+		getContentPane().add(getTfColor());
+		getContentPane().add(getLblNewLabel());
+		getContentPane().add(getTfSeqno());
 
 	}
-	private JLabel getLblNewLabel() {
-		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("이미지");
-			lblNewLabel.setEnabled(false);
-			lblNewLabel.setBackground(new Color(255, 128, 64));
-			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel.setBounds(42, 80, 535, 340);
+	private JLabel getLblImage() {
+		if (lblImage == null) {
+			lblImage = new JLabel("이미지");
+			lblImage.setEnabled(false);
+			lblImage.setBackground(new Color(255, 128, 64));
+			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+			lblImage.setBounds(42, 80, 535, 340);
 		}
-		return lblNewLabel;
+		return lblImage;
 	}
 	private JLabel getLblNewLabel_1() {
 		if (lblNewLabel_1 == null) {
 			lblNewLabel_1 = new JLabel("브랜드");
-			lblNewLabel_1.setBounds(643, 83, 61, 21);
+			lblNewLabel_1.setBounds(602, 85, 61, 21);
 		}
 		return lblNewLabel_1;
 	}
-	private JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setBounds(699, 83, 152, 21);
-			textField.setColumns(10);
+	private JTextField getTfBrand() {
+		if (tfBrand == null) {
+			tfBrand = new JTextField();
+			tfBrand.setEnabled(false);
+			tfBrand.setBounds(658, 85, 248, 21);
+			tfBrand.setColumns(10);
 		}
-		return textField;
+		return tfBrand;
 	}
 	private JLabel getLblNewLabel_1_1() {
 		if (lblNewLabel_1_1 == null) {
 			lblNewLabel_1_1 = new JLabel("상품명");
-			lblNewLabel_1_1.setBounds(643, 128, 61, 21);
+			lblNewLabel_1_1.setBounds(602, 130, 61, 21);
 		}
 		return lblNewLabel_1_1;
 	}
-	private JTextField getTextField_1() {
-		if (textField_1 == null) {
-			textField_1 = new JTextField();
-			textField_1.setColumns(10);
-			textField_1.setBounds(699, 128, 152, 21);
+	private JTextField getTfName() {
+		if (tfName == null) {
+			tfName = new JTextField();
+			tfName.setEnabled(false);
+			tfName.setColumns(10);
+			tfName.setBounds(658, 130, 248, 21);
 		}
-		return textField_1;
+		return tfName;
 	}
 	private JLabel getLblNewLabel_1_1_1() {
 		if (lblNewLabel_1_1_1 == null) {
 			lblNewLabel_1_1_1 = new JLabel("가격");
-			lblNewLabel_1_1_1.setBounds(643, 179, 61, 21);
+			lblNewLabel_1_1_1.setBounds(602, 181, 61, 21);
 		}
 		return lblNewLabel_1_1_1;
 	}
-	private JTextField getTextField_2() {
-		if (textField_2 == null) {
-			textField_2 = new JTextField();
-			textField_2.setColumns(10);
-			textField_2.setBounds(699, 179, 152, 21);
+	private JTextField getTfPrice() {
+		if (tfPrice == null) {
+			tfPrice = new JTextField();
+			tfPrice.setEnabled(false);
+			tfPrice.setColumns(10);
+			tfPrice.setBounds(658, 181, 91, 21);
 		}
-		return textField_2;
+		return tfPrice;
 	}
 	private JLabel getLblNewLabel_1_1_1_1() {
 		if (lblNewLabel_1_1_1_1 == null) {
 			lblNewLabel_1_1_1_1 = new JLabel("사이즈");
-			lblNewLabel_1_1_1_1.setBounds(643, 228, 61, 21);
+			lblNewLabel_1_1_1_1.setBounds(602, 230, 61, 21);
 		}
 		return lblNewLabel_1_1_1_1;
 	}
 	private JLabel getLblNewLabel_1_1_1_1_1() {
 		if (lblNewLabel_1_1_1_1_1 == null) {
 			lblNewLabel_1_1_1_1_1 = new JLabel("수량");
-			lblNewLabel_1_1_1_1_1.setBounds(643, 287, 61, 21);
+			lblNewLabel_1_1_1_1_1.setBounds(770, 231, 44, 21);
 		}
 		return lblNewLabel_1_1_1_1_1;
-	}
-	private JComboBox getComboBox() {
-		if (comboBox == null) {
-			comboBox = new JComboBox();
-			comboBox.setBounds(699, 227, 91, 23);
-		}
-		return comboBox;
-	}
-	private JComboBox getComboBox_1() {
-		if (comboBox_1 == null) {
-			comboBox_1 = new JComboBox();
-			comboBox_1.setBounds(699, 286, 91, 23);
-		}
-		return comboBox_1;
 	}
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {
@@ -172,4 +180,61 @@ public class BuyPage extends JDialog {
 		}
 		return lblNewLabel_2;
 	}
+	private JLabel getLblNewLabel_1_1_1_1_2() {
+		if (lblNewLabel_1_1_1_1_2 == null) {
+			lblNewLabel_1_1_1_1_2 = new JLabel("색상");
+			lblNewLabel_1_1_1_1_2.setBounds(602, 280, 61, 21);
+		}
+		return lblNewLabel_1_1_1_1_2;
+	}
+	private JTextField getTfSize() {
+		if (tfSize == null) {
+			tfSize = new JTextField();
+			tfSize.setEnabled(false);
+			tfSize.setBounds(658, 230, 91, 21);
+			tfSize.setColumns(10);
+		}
+		return tfSize;
+	}
+	private JTextField getTfCount() {
+		if (tfCount == null) {
+			tfCount = new JTextField();
+			tfCount.setEnabled(false);
+			tfCount.setColumns(10);
+			tfCount.setBounds(815, 230, 91, 21);
+		}
+		return tfCount;
+	}
+	private JTextField getTfColor() {
+		if (tfColor == null) {
+			tfColor = new JTextField();
+			tfColor.setEnabled(false);
+			tfColor.setColumns(10);
+			tfColor.setBounds(658, 280, 91, 21);
+		}
+		return tfColor;
+	}
+	
+	private JLabel getLblNewLabel() {
+		if (lblNewLabel == null) {
+			lblNewLabel = new JLabel("번호");
+			lblNewLabel.setBounds(602, 42, 52, 15);
+		}
+		return lblNewLabel;
+	}
+	private JTextField getTfSeqno() {
+		if (tfSeqno == null) {
+			tfSeqno = new JTextField();
+			tfSeqno.setEnabled(false);
+			tfSeqno.setBounds(658, 39, 33, 21);
+			tfSeqno.setColumns(10);
+		}
+		return tfSeqno;
+	}
+	
+	public void selectByinfo(int seq) {
+		
+		
+	}
+
 }

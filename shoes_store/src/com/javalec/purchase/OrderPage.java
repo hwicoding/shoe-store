@@ -165,7 +165,6 @@ public class OrderPage extends JDialog {
 		innerTable.setAutoResizeMode(innerTable.AUTO_RESIZE_OFF);
 		
 		
-		
 	//	Table 내용 지우기
 		int i = outerTable.getRowCount();
 		for(int j = 0; j<i; j++) {
@@ -173,5 +172,4 @@ public class OrderPage extends JDialog {
 		}
 	}
 	
-
 }
