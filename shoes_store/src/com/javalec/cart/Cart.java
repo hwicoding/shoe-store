@@ -1,11 +1,13 @@
 package com.javalec.cart;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,8 +15,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import com.javalec.product.ProductDAO;
+import com.javalec.product.ProductDTO;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -40,15 +47,7 @@ public class Cart {
 	
 	// -- Database & Table//
 			private final DefaultTableModel outer_Table = new DefaultTableModel();
-			private final String url_mysql = "jdbc:mysql://127.0.0.1/useraddress?serverTimezone=UTC&characterEncoding=utf8&useSSL=FALSE";
-			private final String id_mysql = "root";
-			private final String pw_mysql = "qwer1234";
-			private JTable inner_Table;
-			private JButton btnPrevious;
-			private JButton btnPay;
-			private JTable table;
 			
-	
 	/**
 	 * Launch the application.
 	 */
@@ -116,6 +115,10 @@ public class Cart {
 	private JButton getBtnQuery() {
 		if (btnQuery == null) {
 			btnQuery = new JButton("검색");
+			btnQuery.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			btnQuery.setBounds(477, 32, 91, 23);
 		}
 		return btnQuery;
@@ -134,16 +137,13 @@ public class Cart {
 			innertable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					
-					if(e.getButton()==1) {
-						
-					}
-				
-				
-				}
-			});
-			inner_Table.setSelectionMode(ListSelectionModel	.SINGLE_SELECTION);
-			inner_Table.setModel(outer_Table);
+					tableClick();
+						}
+				});
+			innertable.setFillsViewportHeight(true);
+			innertable.setBorder(new LineBorder(new Color(0, 0, 0)));
+			innertable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			innertable.setModel(outer_Table);
 		}
 		return innertable;
 	}
@@ -195,32 +195,32 @@ public class Cart {
 		
 		// 순서
 		int colNo = 0;
-		TableColumn col = inner_Table.getColumnModel().getColumn(colNo);
-		int width = 30;
+		TableColumn col = innertable.getColumnModel().getColumn(colNo);
+		int width = 50;
 		col.setPreferredWidth(width);
 				
 		// 이름
 		colNo = 1;
-		col = inner_Table.getColumnModel().getColumn(colNo);
+		col = innertable.getColumnModel().getColumn(colNo);
 		width = 100;
 		col.setPreferredWidth(width);
 						
 		// 가격
 		colNo = 2;
-		col = inner_Table.getColumnModel().getColumn(colNo);
-		width = 150;
+		col = innertable.getColumnModel().getColumn(colNo);
+		width = 100;
 		col.setPreferredWidth(width);
 						
 		// 사이즈
 		colNo = 3;
-		col = inner_Table.getColumnModel().getColumn(colNo);
-		width = 100;
+		col = innertable.getColumnModel().getColumn(colNo);
+		width = 80;
 		col.setPreferredWidth(width);
 		
 		// 수량
 		colNo = 4;
-		col = inner_Table.getColumnModel().getColumn(colNo);
-		width = 100;
+		col = innertable.getColumnModel().getColumn(colNo);
+		width = 80;
 	    col.setPreferredWidth(width);
 						
 		// 초기화시키기
@@ -229,33 +229,27 @@ public class Cart {
 		outer_Table.removeRow(0);
 		}
 						
-		inner_Table.setAutoResizeMode(inner_Table.AUTO_RESIZE_OFF);
+		innertable.setAutoResizeMode(innertable.AUTO_RESIZE_OFF);
 
 	}
-
+		// 검색
 		private void searchAction() {
 			
-			String query = "sekect seqno, name, price, size, color, count ";
+			CartDao dao = new CartDao();
+			ArrayList<CartDto> dtoList = dao.selecList();
 			
+			int listCount = dtoList.size();
 			
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
-				Statement stmt_mysql = conn_mysql.createStatement();
-				
-				ResultSet rs = stmt_mysql.executeQuery(query);
-				while(rs.next()) {
-					
-					String[] qTxt = { Integer.toString(rs.getInt(1)), rs.getString(2), rs.getString(3), rs.getString(4)};
-					outer_Table.addRow(qTxt);
-				}
-			
-				conn_mysql.close();
-				
-			} catch(Exception e) {
-				e.printStackTrace();
+			for(int i = 0; i < listCount; i++) {
+				String temp = Integer.toString(dtoList.get(i).getSeqno());
+				String[] qTxt = {temp,
+										 dtoList.get(i).getBrand(),
+										 dtoList.get(i).getName(),
+										 Integer.toString(dtoList.get(i).getPrice())};
+				outer_Table.addRow(qTxt);
 			}
-		}
+			}
+		
 	
 		
 	

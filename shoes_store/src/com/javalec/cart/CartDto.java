@@ -13,7 +13,7 @@ public class CartDto {
 
 
 
-	public CartDto(int size, int count, int price, String brand, String name) {
+	public CartDto(String brand, String name, int size, int price, int count) {
 		super();
 		this.size = size;
 		this.count = count;
