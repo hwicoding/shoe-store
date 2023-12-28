@@ -2,27 +2,28 @@ package com.javalec.cart;
 
 public class CartDto {
 
-	// Field
+	
+	//	Field
+	
 	int seqno, size, count, price;
 	String brand, name, color;
+    
 	
-	//Constructor
+	//	constructor
 	
 	public CartDto() {
+		
 	}
 
-
-
-	public CartDto(String brand, String name, int size, int price, int count) {
+	public CartDto(int seqno, String name, String brand, int size, int price, int count) {
 		super();
-		this.size = size;
-		this.count = count;
-		this.price = price;
-		this.brand = brand;
+		this.seqno = seqno;
 		this.name = name;
-	}//
-
-
+		this.brand = brand;
+		this.size = size;
+		this.price = price;
+		this.count = count;
+	}
 
 	public CartDto(int seqno, int size, int count, int price, String brand, String name, String color) {
 		super();
@@ -35,7 +36,9 @@ public class CartDto {
 		this.color = color;
 	}
 
-	//Method
+	
+    //	Method
+	
 	public int getSeqno() {
 		return seqno;
 	}
@@ -90,8 +93,12 @@ public class CartDto {
 
 	public void setColor(String color) {
 		this.color = color;
-	} 
+	}
+	
 	
 
+	
+	
+	
 	
 }
