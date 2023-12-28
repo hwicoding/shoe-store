@@ -18,10 +18,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.TableView.TableRow;
 
+import com.javalec.adminOrder.AdminOrderDao;
+import com.javalec.adminOrder.AdminOrderDto;
+import com.javalec.adminOrder.AdminOrderPage;
 import com.javalec.base.Main;
-import com.javalec.order.OrderDao;
-import com.javalec.order.OrderDto;
-import com.javalec.order.OrderPage;
 import com.javalec.util.ShareVar;
 
 import javax.swing.JButton;
@@ -536,7 +536,7 @@ public class SalePage extends JDialog {
 	
 	private void changeWindow() {
 		this.dispose();
-		OrderPage page = new OrderPage();
+		AdminOrderPage page = new AdminOrderPage();
 		page.setVisible(true);
 	}
 }
