@@ -1,9 +1,9 @@
-package com.javalec.order;
+package com.javalec.adminOrder;
 
 import java.io.FileInputStream;
 import java.sql.Date;
 
-public class OrderDto {
+public class AdminOrderDto {
 	
 	int oseq;
 	String obrand;
@@ -14,13 +14,13 @@ public class OrderDto {
 	String ocolor;
 	Date odate;
 	
-	public OrderDto() {
+	public AdminOrderDto() {
 		// TODO Auto-generated constructor stub
 	}
 
 	
 
-	public OrderDto(int oseq, String obrand, String oname, int oprice, int ocnt, int osize, String ocolor) {
+	public AdminOrderDto(int oseq, String obrand, String oname, int oprice, int ocnt, int osize, String ocolor) {
 		super();
 		this.oseq = oseq;
 		this.obrand = obrand;

@@ -1,4 +1,4 @@
-package com.javalec.order;
+package com.javalec.adminOrder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import com.javalec.util.ShareVar;
 
-public class OrderDao {
+public class AdminOrderDao {
 
 	private final String url = ShareVar.dbName;
 	private final String id = ShareVar.dbUser;
@@ -31,19 +31,19 @@ public class OrderDao {
 	Date odate;
 	
 	
-	public OrderDao() {
+	public AdminOrderDao() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	
-	public OrderDao(int oseq) {
+	public AdminOrderDao(int oseq) {
 		super();
 		this.oseq = oseq;
 	}
 	
 	
 
-	public OrderDao(String obrand, String oname, int oprice, int ocnt, int osize, String ocolor) {
+	public AdminOrderDao(String obrand, String oname, int oprice, int ocnt, int osize, String ocolor) {
 		super();
 		this.obrand = obrand;
 		this.oname = oname;
@@ -54,7 +54,7 @@ public class OrderDao {
 	}
 
 
-	public OrderDao(int oseq, String obrand, String oname, int oprice, int osize, int ocnt, String ocolor) {
+	public AdminOrderDao(int oseq, String obrand, String oname, int oprice, int osize, int ocnt, String ocolor) {
 		super();
 		this.oseq = oseq;
 		this.obrand = obrand;
@@ -66,8 +66,8 @@ public class OrderDao {
 	}
 
 
-	public ArrayList<OrderDto> searchAction() {
-		ArrayList<OrderDto> dtoList = new ArrayList<OrderDto>();
+	public ArrayList<AdminOrderDto> searchAction() {
+		ArrayList<AdminOrderDto> dtoList = new ArrayList<AdminOrderDto>();
 		String query = "select oseq, obrand, oname, oprice, ocnt, osize, ocolor from orderProd order by obrand";
 		
 		try {
@@ -86,7 +86,7 @@ public class OrderDao {
 				int wkSize = rs.getInt(6);
 				String wkColor = rs.getString(7);
 				
-				OrderDto dto = new OrderDto(wkSeq, weBrand, wkName, wkPrice, wkCnt, wkSize, wkColor);
+				AdminOrderDto dto = new AdminOrderDto(wkSeq, weBrand, wkName, wkPrice, wkCnt, wkSize, wkColor);
 				dtoList.add(dto);
 			}
 			conn.close();
@@ -96,8 +96,8 @@ public class OrderDao {
 		return dtoList;
 	}
 	
-	public OrderDto cellClicked() {
-		OrderDto dto = null;
+	public AdminOrderDto cellClicked() {
+		AdminOrderDto dto = null;
 		String query = "select oseq, obrand, oname, oprice, ocnt, osize, ocolor from orderProd where oseq ="+oseq;
 		
 		try {
@@ -116,7 +116,7 @@ public class OrderDao {
 				int wkSize = rs.getInt(6);
 				String wkColor = rs.getString(7);
 				
-				 dto = new OrderDto(wkSeq, weBrand, wkName, wkPrice, wkCnt, wkSize, wkColor);
+				 dto = new AdminOrderDto(wkSeq, weBrand, wkName, wkPrice, wkCnt, wkSize, wkColor);
 			}
 			conn.close();
 		} catch(Exception e) {

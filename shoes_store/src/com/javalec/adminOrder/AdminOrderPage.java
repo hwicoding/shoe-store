@@ -1,4 +1,4 @@
-package com.javalec.order;
+package com.javalec.adminOrder;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -47,7 +47,7 @@ import java.util.Date;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class OrderPage extends JDialog {
+public class AdminOrderPage extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JMenuBar menuBar;
@@ -95,7 +95,7 @@ public class OrderPage extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OrderPage dialog = new OrderPage();
+					AdminOrderPage dialog = new AdminOrderPage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -108,7 +108,7 @@ public class OrderPage extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public OrderPage() {
+	public AdminOrderPage() {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
@@ -168,7 +168,7 @@ public class OrderPage extends JDialog {
 				}
 			});
 
-			ImageIcon icon = new ImageIcon(OrderPage.class.getResource("/com/javalec/images/backIcon.png"));
+			ImageIcon icon = new ImageIcon(AdminOrderPage.class.getResource("/com/javalec/images/backIcon.png"));
 			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 			ImageIcon changeIcon = new ImageIcon(changeToImg);
 			mnBack.setIcon(changeIcon);
@@ -639,8 +639,8 @@ public class OrderPage extends JDialog {
 
 	// 창 활성화 시 조회되도록
 	private void searchAction() {
-		OrderDao dao = new OrderDao();
-		ArrayList<OrderDto> dtoList = dao.searchAction();
+		AdminOrderDao dao = new AdminOrderDao();
+		ArrayList<AdminOrderDto> dtoList = dao.searchAction();
 
 		int listCnt = dtoList.size();
 		// select oseq, obrand, oname, oprice, ocnt, osize, ocolor from orderProd ";
@@ -665,8 +665,8 @@ public class OrderPage extends JDialog {
 		String seq = (String) innerTable.getValueAt(i, 0);
 		int sequence = Integer.parseInt(seq);
 		
-		OrderDao dao = new OrderDao(sequence);
-		OrderDto dto = dao.cellClicked();
+		AdminOrderDao dao = new AdminOrderDao(sequence);
+		AdminOrderDto dto = dao.cellClicked();
 		tfSeq.setText(Integer.toString(dto.getOseq()));
 		tfBrand.setText(dto.getObrand());
 		tfName.setText(dto.getOname());
@@ -688,7 +688,7 @@ public class OrderPage extends JDialog {
 		int price = Integer.parseInt(tfPrice.getText().trim());
 		
 		
-		OrderDao dao = new OrderDao(brand, name, price, cnt, size, color);
+		AdminOrderDao dao = new AdminOrderDao(brand, name, price, cnt, size, color);
 		if(dao.insertAction() == true) {
 			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개 등록되었습니다.");
 		} else {
@@ -708,7 +708,7 @@ public class OrderPage extends JDialog {
 		String color = tfColor.getText().trim();
 		int price = Integer.parseInt(tfPrice.getText().trim());
 
-		OrderDao dao = new OrderDao(seqno, brand, name, price, size, cnt, color);
+		AdminOrderDao dao = new AdminOrderDao(seqno, brand, name, price, size, cnt, color);
 		if(dao.updateAction() == true) {
 			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개로 수정되었습니다.");
 		} else {
@@ -719,7 +719,7 @@ public class OrderPage extends JDialog {
 	//삭제 메소드
 	private void deleteAction() {
 		int seqno = Integer.parseInt(tfSeq.getText());
-		OrderDao dao = new OrderDao(seqno);
+		AdminOrderDao dao = new AdminOrderDao(seqno);
 		if(dao.deleteAction() == true) {
 			JOptionPane.showMessageDialog(null, "해당 제품이 삭제되었습니다.");
 		} else {
