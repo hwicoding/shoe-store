@@ -52,8 +52,37 @@ public class CartDao {
 
 	public ArrayList<CartDao> selectList(){
 	 ArrayList<CartDto> cartdtoList = new ArrayList<CartDto>();
-	 String whereDefault = "select seqno, name, telno, relation from userinfo";
+	 String whereDefault = "select seqno, name, price, size, color, count from product";
 	
+	 try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+			Statement stmt_mysql  = conn_mysql.createStatement();
+			
+			ResultSet rs = stmt_mysql.executeQuery(whereDefault);
+			
+			while(rs.next()) {
+				
+				int wkSeq = rs.getInt(1);
+				String wkName = rs.getString(2);
+				String wkPrice = rs.getString(3);
+				String wkSize = rs.getString(4);
+				String wkColor = rs.getString(5);
+				String wkCount = rs.getString(6);
+				
+				CartDto cartDto = new CartDto(wkSeq, wkName, wkPrice, wkSize, wkColor, wkCount);
+				cartdtoList.add(cartDto);
+
+				
+			}
+			conn_mysql.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cartdtoList;
+	}
+}
 
 	
 	
