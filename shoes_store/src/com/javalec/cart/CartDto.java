@@ -11,13 +11,18 @@ public class CartDto {
 	public CartDto() {
 	}
 
-	public CartDto(int count, int price, String brand, String name) {
+
+
+	public CartDto(int size, int count, int price, String brand, String name) {
 		super();
+		this.size = size;
 		this.count = count;
 		this.price = price;
 		this.brand = brand;
 		this.name = name;
-	}
+	}//
+
+
 
 	public CartDto(int seqno, int size, int count, int price, String brand, String name, String color) {
 		super();
@@ -87,5 +92,6 @@ public class CartDto {
 		this.color = color;
 	} 
 	
+
 	
 }

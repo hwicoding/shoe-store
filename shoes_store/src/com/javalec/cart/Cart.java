@@ -38,7 +38,7 @@ public class Cart {
 	private JTextField tfSelection;
 	private JButton btnQuery;
 	
-	// -- Database & Table
+	// -- Database & Table//
 			private final DefaultTableModel outer_Table = new DefaultTableModel();
 			private final String url_mysql = "jdbc:mysql://127.0.0.1/useraddress?serverTimezone=UTC&characterEncoding=utf8&useSSL=FALSE";
 			private final String id_mysql = "root";
