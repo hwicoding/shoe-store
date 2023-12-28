@@ -232,7 +232,17 @@ public class BuyPage extends JDialog {
 		return tfSeqno;
 	}
 	
-	public void selectByinfo(int seq) {
+	public void selectByinfo(int wkSequence) {
+		
+		ProductDAO dao = new ProductDAO(wkSequence);
+		ProductDTO dto = dao.tableClick();
+		
+		tfSeqno.setText(Integer.toString(dto.getSeqno()));
+		tfBrand.setText(dto.getBrand());
+		tfName.setText(dto.getName	());
+		tfPrice.setText(Integer.toString(dto.getPrice()));
+		tfCount.setText(Integer.toString(dto.getCount()));
+		tfColor.setText(dto.getColor());
 		
 		
 	}
