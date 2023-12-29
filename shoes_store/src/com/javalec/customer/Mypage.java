@@ -20,9 +20,11 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.JobAttributes;
 
 import javax.swing.JPasswordField;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -48,6 +50,7 @@ public class Mypage extends JDialog {
 	private JTextField tfFilepath;
 	private JLabel lblImage;
 	private JButton btnNewButton;
+	private JButton btnNewButton_1;
 
 	/**
 	 * Launch the application.
@@ -95,19 +98,30 @@ public class Mypage extends JDialog {
 		getContentPane().add(getTfFilepath());
 		getContentPane().add(getLblImage());
 		getContentPane().add(getBtnNewButton());
+		getContentPane().add(getBtnNewButton_1());
 
 	}
 	
 	private void action1() {
-		tfId.setText(ShareVar.userid);
-		pfPw.setText(ShareVar.password);
-		tfName.setText(ShareVar.name);
-		tfPhone.setText(ShareVar.phone);
-		String filepath = Integer.toString(ShareVar.filename);
-		tfFilepath.setText(filepath);
-		lblImage.setIcon(new ImageIcon(filepath));
+		Dao dao = new Dao();
+		Dto dto =dao.Action2();
+		
+		tfId.setText(dto.getUserid());
+		tfName.setText(dto.getUsername());
+		tfPhone.setText(dto.getUserphone());
+		pfPw.setText(dto.getUserpw());
+		char[] pw = pfPw2.getPassword();
+		String pass = new String(pw);
+		
+		String filepath1 = Integer.toString(ShareVar.filename);
+		tfFilepath.setText(filepath1);
+	
+		lblImage.setIcon(new ImageIcon(filepath1));
 		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-		File file = new File(filepath);
+		
+	
+		
+		
 	
 		
 	}
@@ -270,11 +284,8 @@ public class Mypage extends JDialog {
 		Dao dao = new Dao(id, pass);
 		boolean result = dao.check();
 		
-		if(id==ShareVar.userid) {
-			JOptionPane.showMessageDialog(null, "이전 아이디와 동일합니다");
-		}
-		else if(result==false) {
-			JOptionPane.showMessageDialog(null, "중복입니다");
+		if(result==false) {
+			JOptionPane.showMessageDialog(null, "이전 아이디이거나 중복입니다");
 		}else {
 			JOptionPane.showMessageDialog(null, "사용가능합니다");
 			pfPw.setEditable(true);
@@ -300,6 +311,8 @@ public class Mypage extends JDialog {
 			JOptionPane.showMessageDialog(null, "비밀번호가 틀립니다");
 		}
 	}
+	
+	
 	private void update() {
 		String id =tfId.getText();
 		char[] pass =pfPw.getPassword();
@@ -308,6 +321,26 @@ public class Mypage extends JDialog {
 		String pw1 =  new String(pass1);
 		String name= tfName.getText();
 		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
+		
+		if(id.length()!=0 &&pw.length()!=0&&pw1.length()!=0 &&name.length()!=0&& phone.length()!=0&&file1.length()!=0) {
+			update2();
+		
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "잘못된 부분이 있습니다.");}}
+	
+	private void update2() {
+		String id =tfId.getText();
+		char[] pass =pfPw.getPassword();
+		String pw=new String(pass);
+		char[] pass1=pfPw2.getPassword();
+		String pw1 =  new String(pass1);
+		String name= tfName.getText();
+		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
+		
+		
 
 		FileInputStream input = null;
 		File file = new File(tfFilepath.getText());
@@ -325,6 +358,7 @@ public class Mypage extends JDialog {
 		}else {
 			JOptionPane.showMessageDialog(null, "잘못된 부분이 없는지 확인하세요");
 		}}
+
 		private void Filepath() {
 			JFileChooser chooser = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG","PNG","BMP", "jpg","png","bmp");
@@ -366,4 +400,44 @@ public class Mypage extends JDialog {
 		pfPw2.setEditable(true);
 	}
 	
+	private JButton getBtnNewButton_1() {
+		if (btnNewButton_1 == null) {
+			btnNewButton_1 = new JButton("회원탈퇴");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					out();
+				}
+			});
+			btnNewButton_1.setBounds(0, 0, 91, 23);
+		}
+		return btnNewButton_1;
+	}
+	
+	private void out() {
+		String id =tfId.getText();
+		char[] pass =pfPw.getPassword();
+		String pw=new String(pass);
+		char[] pass1=pfPw2.getPassword();
+		String pw1 =  new String(pass1);
+		String name= tfName.getText();
+		String phone = tfPhone.getText();
+
+		FileInputStream input = null;
+		File file = new File(tfFilepath.getText());
+		try {
+			input= new FileInputStream(file);
+		}catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		Dao dao = new Dao(id, pw, name, phone, input);
+		boolean result = dao.out();
+		
+		if(result==true) {
+			JOptionPane.showMessageDialog(null, tfId.getText()+"님의 회원탈퇴가 완료되었습니다");
+			dispose();
+		}else {
+			JOptionPane.showMessageDialog(null, "잘못되었습니다");
+		}
+	}
+		
 		}

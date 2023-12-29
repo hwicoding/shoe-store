@@ -95,7 +95,8 @@ public class Dao {
 			catch (Exception e) {
 				return false;
 				// TODO: handle exception
-			}return true;}
+			}return true;
+			}
 		
 		
 			
@@ -321,6 +322,14 @@ public class Dao {
 				// TODO: handle exception
 			}return true;}
 		
+		public Dao(String userid, String userpw, String username, String userphone) {
+			super();
+			this.userid = userid;
+			this.userpw = userpw;
+			this.username = username;
+			this.userphone = userphone;
+		}
+
 		public boolean DeleteAction() {
 			PreparedStatement ps = null; //?쓰려면 prepare사용 arraylist안쓰고 null값으로 표현한다. //위에서 선언해야 try문 밖에서도 사용가능.
 			
@@ -378,9 +387,74 @@ public class Dao {
 			}return dto;
 			
 		}
-
-
-}
-	
 		
+		public Dto Action2() {
+			//데이터 하나씩만 받을거라 arraylist안씀
+			
+			Dto dto = null;  // arraylist안쓰고 null값으로 표현한다. //위에서 선언해야 try문 밖에서도 사용가능.
+			
+			String where1 = "select userid,userpw,username,userphone,userImage from customer"; //실행할 쿼리
+			String where2=" where userid='"+ShareVar.userid+"'";
+			
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				Connection conn_mysql = DriverManager.getConnection(url_mysql,id_mysql,pw_mysql);
+				Statement stmt_mysql = conn_mysql.createStatement();  //  db를 연결
+				
+				ResultSet rs =stmt_mysql.executeQuery(where1+where2);  //whereDefault 실행
+				
+				//while(rs.next()) {
+				if(rs.next()) {
+					String wkid = rs.getString(1);
+					String wkpw=rs.getString(2);
+					String wkname=rs.getString(3);
+					String wkphone=rs.getString(4);
+					
+					//image
+					ShareVar.filename=ShareVar.filename+1; //파일 새롭게 만들기. 
+					File file = new File(Integer.toString(ShareVar.filename));
+					FileOutputStream output = new FileOutputStream(file); //출력 파일
+					InputStream input = rs.getBinaryStream(5);
+					byte[] buffer = new byte[1024]; //파일 크기 제한하기.
+					while(input.read(buffer)>0) {
+						output.write(buffer);
+					}
+					
+					dto = new Dto(wkid,wkpw,wkname,wkphone);  // dto에 이 값을 한번에 저장한다.
+				}
+				conn_mysql.close();
+				
+				
+			}catch (Exception e) {
+				// TODO: handle exception
+			}return dto;
+			
+		}
+		
+		public boolean out() {
+			PreparedStatement ps = null; //?쓰려면 prepare사용 arraylist안쓰고 null값으로 표현한다. //위에서 선언해야 try문 밖에서도 사용가능.
+			
+			
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				Connection conn_mysql = DriverManager.getConnection(url_mysql,id_mysql,pw_mysql);
+				Statement stmt_mysql = conn_mysql.createStatement();  //  db를 연결
+				
+				String A = "delete from customer"; //실행할 쿼리
+				String B=" where userid=?";
+				
+				ps = conn_mysql.prepareStatement(A+B);
+				ps.setString(1, userid);
+				ps.executeUpdate();
+				
+				conn_mysql.close();
 
+				}
+				
+				
+			catch (Exception e) {
+				return false;
+				// TODO: handle exception
+			}return true;
+			
+		}	}

@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.JobAttributes;
+
 import javax.swing.JTextField;
 
 import com.javalec.util.ShareVar;
@@ -17,6 +19,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class CustomerMain {
 
@@ -27,7 +32,6 @@ public class CustomerMain {
 	private JButton btnLogin;
 	private JButton btnRegis;
 	private JPasswordField pfPass;
-	private JRadioButton rdadmin;
 
 	/**
 	 * Launch the application.
@@ -66,7 +70,6 @@ public class CustomerMain {
 		frame.getContentPane().add(getBtnLogin());
 		frame.getContentPane().add(getBtnRegis());
 		frame.getContentPane().add(getPfPass());
-		frame.getContentPane().add(getRdadmin());
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
@@ -95,6 +98,32 @@ public class CustomerMain {
 	private JButton getBtnLogin() {
 		if (btnLogin == null) {
 			btnLogin = new JButton("로그인");
+			btnLogin.addKeyListener(new KeyAdapter() {
+				KeyListener listener = new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+						// TODO Auto-generated method stub
+						int code =  e.getKeyCode();
+						if(code==KeyEvent.VK_ENTER) {
+							login();
+						}
+						
+					}
+				};
+			});
 			btnLogin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					login();
@@ -160,21 +189,35 @@ public class CustomerMain {
 		dao.confirm(inputID, inputPw);
 		ArrayList<Dto> dtoList1 = dao.confirm(inputID, inputPw);
 		dtoList1.size();
-	
+	if(inputID.equals("admin")) {
 		if(dtoList1.size()>0) {
 			if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
-				JOptionPane.showMessageDialog(null, "로그인 성공" );
+				JOptionPane.showMessageDialog(null, "관리자 로그인 성공" );
 				System.out.println(dtoList1.get(0).userid);
 				ShareVar.userid=dtoList1.get(0).getUserid();
 				ShareVar.password=dtoList1.get(0).getUserpw();
 				ShareVar.name = dtoList1.get(0).getUsername();
 				ShareVar.phone=dtoList1.get(0).getUserphone();
 				String filepath = Integer.toString(ShareVar.filename);
-				Lobby();
+				//Lobby();
 			} else {
 				JOptionPane.showMessageDialog(null, "로그인 실패");	}
 		}else {
-			JOptionPane.showMessageDialog(null, "로그인 실패");
+			JOptionPane.showMessageDialog(null, "로그인 실패");}
+	}else {if(dtoList1.size()>0) {
+		if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
+			JOptionPane.showMessageDialog(null, "로그인 성공" );
+			ShareVar.userid=dtoList1.get(0).getUserid();
+			ShareVar.password=dtoList1.get(0).getUserpw();
+			ShareVar.name = dtoList1.get(0).getUsername();
+			ShareVar.phone=dtoList1.get(0).getUserphone();
+			String filepath = Integer.toString(ShareVar.filename);
+			Lobby();
+		} else {
+			JOptionPane.showMessageDialog(null, "로그인 실패");	}
+	}else {
+		JOptionPane.showMessageDialog(null, "로그인 실패");}
+			
 		}
 	}
 	
@@ -191,28 +234,9 @@ public class CustomerMain {
 			
 			
 	}
-	private JRadioButton getRdadmin() {
-		if (rdadmin == null) {
-			rdadmin = new JRadioButton("관리자");
-			rdadmin.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					admin();
-				}
-			});
-			rdadmin.setBounds(200, 173, 113, 23);
-		}
-		return rdadmin;
-	}
 	
-	private void admin() {
-		if(tfId.getText()=="admin") {
-			if(rdadmin.isSelected()) {
-				confirm();
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "관리자가 아니거나 잘못 입력하셨습니다.");
-			}
+
 		}
 		
-	}
-}
+
+

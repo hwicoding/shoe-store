@@ -12,6 +12,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -20,6 +22,7 @@ public class Lobby extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JButton btnSetting;
 	private JLabel lblName;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -52,6 +55,7 @@ public class Lobby extends JDialog {
 		getContentPane().setLayout(null);
 		getContentPane().add(getBtnSetting());
 		getContentPane().add(getLblName());
+		getContentPane().add(getBtnNewButton());
 
 	}
 	private JButton getBtnSetting() {
@@ -84,6 +88,24 @@ public class Lobby extends JDialog {
 	private void checkpage() {
 		customerCheck user = new customerCheck();
 		user.setVisible(true);
+		
+	}
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("로그아웃");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					logout();
+				}
+			});
+			btnNewButton.setBounds(512, 49, 91, 23);
+		}
+		return btnNewButton;
+	}
+	
+	private void logout() {
+		JOptionPane.showMessageDialog(null, "로그아웃이 완료되었습니다.");
+		dispose();
 		
 	}
 }

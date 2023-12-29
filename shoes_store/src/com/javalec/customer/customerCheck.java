@@ -89,6 +89,7 @@ public class customerCheck extends JDialog {
 		if(pass.equals(ShareVar.password)) {
 			JOptionPane.showMessageDialog(null, "확인되었습니다");
 			Mypage();
+			dispose();
 		}else {
 			JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주십시오");
 		}
