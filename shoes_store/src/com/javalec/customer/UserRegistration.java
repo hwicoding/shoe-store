@@ -333,7 +333,7 @@ public class UserRegistration extends JDialog {
 			e.printStackTrace();
 		}
 		
-		Dao dao = new Dao(id,pw,name,phone,input);
+		Dao dao = new Dao(id,pw,name,phone,input,file1);
 		boolean result = dao.insertAction();
 		
 		if(result==true) {
@@ -359,7 +359,11 @@ public class UserRegistration extends JDialog {
 			String FILEPATH = chooser.getSelectedFile().getPath();
 			tfFilepath.setText(FILEPATH);
 			lblImage.setIcon(new ImageIcon(FILEPATH));
+			lblImage.setBounds(465, 177, 235, 139);
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			getContentPane().add(lblImage);
+			setVisible(true);
 
 			
 		

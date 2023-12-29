@@ -22,6 +22,11 @@ import javax.swing.JRadioButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.zone.*;
 
 public class CustomerMain {
 
@@ -37,6 +42,8 @@ public class CustomerMain {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -182,6 +189,9 @@ public class CustomerMain {
 		char[] pw = pfPass.getPassword();
 		String inputPw = new String(pw);
 		
+		LocalDate now = LocalDate.now();
+		
+		LocalDate SeoulNow = LocalDate.now(ZoneId.of("Asia/Seoul"));
 	
 		
 		String login="";
@@ -189,16 +199,17 @@ public class CustomerMain {
 		dao.confirm(inputID, inputPw);
 		ArrayList<Dto> dtoList1 = dao.confirm(inputID, inputPw);
 		dtoList1.size();
+		
+		
 	if(inputID.equals("admin")) {
 		if(dtoList1.size()>0) {
 			if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
-				JOptionPane.showMessageDialog(null, "관리자 로그인 성공" );
-				System.out.println(dtoList1.get(0).userid);
+				JOptionPane.showMessageDialog(null, SeoulNow+" 관리자 로그인 성공" );
 				ShareVar.userid=dtoList1.get(0).getUserid();
 				ShareVar.password=dtoList1.get(0).getUserpw();
 				ShareVar.name = dtoList1.get(0).getUsername();
 				ShareVar.phone=dtoList1.get(0).getUserphone();
-				String filepath = Integer.toString(ShareVar.filename);
+				String filepath = dtoList1.get(0).getFilepath();
 				//Lobby();
 			} else {
 				JOptionPane.showMessageDialog(null, "로그인 실패");	}
@@ -206,19 +217,22 @@ public class CustomerMain {
 			JOptionPane.showMessageDialog(null, "로그인 실패");}
 	}else {if(dtoList1.size()>0) {
 		if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
-			JOptionPane.showMessageDialog(null, "로그인 성공" );
+			JOptionPane.showMessageDialog(null, SeoulNow+" 로그인 성공" );
 			ShareVar.userid=dtoList1.get(0).getUserid();
+			System.out.println(dtoList1.get(0).userid);
 			ShareVar.password=dtoList1.get(0).getUserpw();
 			ShareVar.name = dtoList1.get(0).getUsername();
 			ShareVar.phone=dtoList1.get(0).getUserphone();
-			String filepath = Integer.toString(ShareVar.filename);
+			String filepath = dtoList1.get(0).getFilepath();
+			System.out.println(filepath);
+			clearcolumn();
 			Lobby();
 		} else {
 			JOptionPane.showMessageDialog(null, "로그인 실패");	}
 	}else {
 		JOptionPane.showMessageDialog(null, "로그인 실패");}
 			
-		}
+	}
 	}
 	
 
@@ -233,6 +247,11 @@ public class CustomerMain {
 			
 			
 			
+	}
+	private void clearcolumn() {
+
+		tfId.setText("");
+		pfPass.setText("");
 	}
 	
 

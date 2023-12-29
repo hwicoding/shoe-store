@@ -28,6 +28,7 @@ public class Dao {
 	String username;
 	String userphone;
 	FileInputStream file;
+	String filepath;
 	
 	public Dao() {
 		// TODO Auto-generated constructor stub
@@ -44,6 +45,16 @@ public class Dao {
 	
 	
 	
+		public Dao(String userid, String userpw, String username, String userphone, FileInputStream file, String filepath) {
+		super();
+		this.userid = userid;
+		this.userpw = userpw;
+		this.username = username;
+		this.userphone = userphone;
+		this.file = file;
+		this.filepath = filepath;
+	}
+
 		public Dao(String userid) {
 		super();
 		this.userid = userid;
@@ -76,8 +87,8 @@ public class Dao {
 				Connection conn_mysql = DriverManager.getConnection(url_mysql,id_mysql,pw_mysql);
 				Statement stmt_mysql = conn_mysql.createStatement();  //  db를 연결
 				
-				String A = "insert into customer(userid,userpw,username,userphone,userImage)"; //실행할 쿼리
-				String B=" values(?,?,?,?,?)";
+				String A = "insert into customer(userid,userpw,username,userphone,userImage,filepath)"; //실행할 쿼리
+				String B=" values(?,?,?,?,?,?)";
 				
 				ps = conn_mysql.prepareStatement(A+B);
 				ps.setString(1, userid);
@@ -85,6 +96,7 @@ public class Dao {
 				ps.setString(3, username);
 				ps.setString(4, userphone);
 				ps.setBinaryStream(5, file);
+				ps.setString(6, filepath);
 				ps.executeUpdate();
 				
 				conn_mysql.close();
@@ -141,7 +153,7 @@ public class Dao {
 
 		public ArrayList<Dto> confirm(String id, String pw){
 			ArrayList<Dto> dtoList1 = new ArrayList<Dto>();
-			String query = "select userid,userpw,username,userphone,userImage from customer "; //실행할 쿼리
+			String query = "select userid,userpw,username,userphone,userImage,filepath from customer "; //실행할 쿼리
 			String query2 =" where userid='"+id+"' and  userpw='"+pw+"'";
 			
 			try {
@@ -156,16 +168,16 @@ public class Dao {
 					String wkpw=rs.getString(2);
 					String wkname = rs.getString(3);
 					String wkphone = rs.getString(4);
+					String wkpath = rs.getString(6);
 					
 
-					Dto dto = new Dto(wkid,wkpw,wkname,wkphone);  // dto에 이 값을 한번에 저장한다.
+					Dto dto = new Dto(wkid,wkpw,wkname,wkphone,wkpath);  // dto에 이 값을 한번에 저장한다.
 					dtoList1.add(dto);
 					
-				}
-				ShareVar.filename=ShareVar.filename+1; //파일 새롭게 만들기. 
+				} //파일 새롭게 만들기. 
 				File file = new File(Integer.toString(ShareVar.filename));
 				FileOutputStream output = new FileOutputStream(file); //출력 파일
-				InputStream input = rs.getBinaryStream(7);
+				InputStream input = rs.getBinaryStream(5);
 				byte[] buffer = new byte[1024]; //파일 크기 제한하기.
 				while(input.read(buffer)>0) {
 					output.write(buffer);
@@ -301,15 +313,16 @@ public class Dao {
 				Connection conn_mysql = DriverManager.getConnection(url_mysql,id_mysql,pw_mysql);
 				Statement stmt_mysql = conn_mysql.createStatement();  //  db를 연결
 				
-				String A = "update customer set userid=?, userpw=?, username=?, userphone=?, userImage=?"; //실행할 쿼리
+				String A = "update customer set userpw=?, username=?, userphone=?, userImage=?,filepath=?"; //실행할 쿼리
 				String B=" where userid=?";
-				
 				ps = conn_mysql.prepareStatement(A+B);
-				ps.setString(1, userid);
-				ps.setString(2, userpw);
-				ps.setString(3, username);
-				ps.setString(4, userphone);
-				ps.setBinaryStream(5, file);
+				
+				ps.setString(1, userpw);
+				ps.setString(2, username);
+				ps.setString(3, userphone);
+				ps.setBinaryStream(4, file);
+				ps.setString(5, filepath);
+				ps.setString(6, userid);
 				ps.executeUpdate();
 				
 				conn_mysql.close();
@@ -318,7 +331,7 @@ public class Dao {
 				
 				
 			catch (Exception e) {
-				return false;
+				return false;   //e.printStackTrace(); --오류정보를 확인할 수 있다.
 				// TODO: handle exception
 			}return true;}
 		
@@ -393,7 +406,7 @@ public class Dao {
 			
 			Dto dto = null;  // arraylist안쓰고 null값으로 표현한다. //위에서 선언해야 try문 밖에서도 사용가능.
 			
-			String where1 = "select userid,userpw,username,userphone,userImage from customer"; //실행할 쿼리
+			String where1 = "select userid,userpw,username,userphone,userImage,filepath from customer"; //실행할 쿼리
 			String where2=" where userid='"+ShareVar.userid+"'";
 			
 			try {
@@ -404,14 +417,14 @@ public class Dao {
 				ResultSet rs =stmt_mysql.executeQuery(where1+where2);  //whereDefault 실행
 				
 				//while(rs.next()) {
-				if(rs.next()) {
+				while(rs.next()) {
 					String wkid = rs.getString(1);
 					String wkpw=rs.getString(2);
 					String wkname=rs.getString(3);
 					String wkphone=rs.getString(4);
+					String wkfilepath = rs.getString(6);
 					
 					//image
-					ShareVar.filename=ShareVar.filename+1; //파일 새롭게 만들기. 
 					File file = new File(Integer.toString(ShareVar.filename));
 					FileOutputStream output = new FileOutputStream(file); //출력 파일
 					InputStream input = rs.getBinaryStream(5);
@@ -420,7 +433,7 @@ public class Dao {
 						output.write(buffer);
 					}
 					
-					dto = new Dto(wkid,wkpw,wkname,wkphone);  // dto에 이 값을 한번에 저장한다.
+					dto = new Dto(wkid,wkpw,wkname,wkphone,wkfilepath);  // dto에 이 값을 한번에 저장한다.
 				}
 				conn_mysql.close();
 				
@@ -457,4 +470,32 @@ public class Dao {
 				// TODO: handle exception
 			}return true;
 			
-		}	}
+		}	
+		public Dto pwch() {
+			Dto dto = null;
+			
+			String where1 = "select userpw from customer";
+			String where2 = " where userid="+userid;
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				Connection conn_mysql = DriverManager.getConnection(url_mysql,id_mysql,pw_mysql);
+				Statement stmt_mysql = conn_mysql.createStatement();  //  db를 연결
+				
+				ResultSet rs =stmt_mysql.executeQuery(where1+where2);  //whereDefault 실행
+				
+				//while(rs.next()) {
+				if(rs.next()) {
+					String wkid = rs.getString(1);
+					String wkpw = rs.getString(2);
+		
+					
+					dto = new Dto(wkid,wkpw);  // dto에 이 값을 한번에 저장한다.
+				}
+				conn_mysql.close();
+				
+				
+			}catch (Exception e) {
+				// TODO: handle exception
+			}return dto;
+			
+		}}

@@ -104,8 +104,15 @@ public class Lobby extends JDialog {
 	}
 	
 	private void logout() {
-		JOptionPane.showMessageDialog(null, "로그아웃이 완료되었습니다.");
-		dispose();
+		int result=JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?","Confirm",JOptionPane.YES_NO_OPTION);
+		if(result==JOptionPane.CLOSED_OPTION) {
+			JOptionPane.showMessageDialog(null, "잘못된 입력입니다.");
+		}else if(result==JOptionPane.YES_OPTION) {
+			JOptionPane.showMessageDialog(null, "로그아웃이 완료되었습니다.");
+			dispose();
+		}else {
+			JOptionPane.showMessageDialog(null, "로그인 상태입니다.");
+		}
 		
 	}
 }
