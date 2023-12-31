@@ -1,6 +1,7 @@
 package com.javalec.customer;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JDialog;
 
@@ -11,6 +12,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -23,6 +25,7 @@ public class Lobby extends JDialog {
 	private JButton btnSetting;
 	private JLabel lblName;
 	private JButton btnNewButton;
+	private JLabel lblImage;
 
 	/**
 	 * Launch the application.
@@ -56,6 +59,7 @@ public class Lobby extends JDialog {
 		getContentPane().add(getBtnSetting());
 		getContentPane().add(getLblName());
 		getContentPane().add(getBtnNewButton());
+		getContentPane().add(getLblImage());
 
 	}
 	private JButton getBtnSetting() {
@@ -74,13 +78,24 @@ public class Lobby extends JDialog {
 	
 	private void checkstatus() {
 		lblName.setText(ShareVar.name+"님 환영합니다.");
+		Dao dao = new Dao();
+		Dto dto =dao.Action2();
+		String filepath1 = dto.getFilepath();
+		ImageIcon icon =  new ImageIcon(filepath1);
+		Image i = icon.getImage();
+		Image s = i.getScaledInstance(59, 48, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon icons =  new ImageIcon(s);
+		lblImage.setIcon(icons);
+		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+		getContentPane().add(lblImage);
+		setVisible(true);
 	
 		
 	}
 	private JLabel getLblName() {
 		if (lblName == null) {
 			lblName = new JLabel("");
-			lblName.setBounds(379, 10, 153, 21);
+			lblName.setBounds(392, 0, 153, 48);
 		}
 		return lblName;
 	}
@@ -114,5 +129,12 @@ public class Lobby extends JDialog {
 			JOptionPane.showMessageDialog(null, "로그인 상태입니다.");
 		}
 		
+	}
+	private JLabel getLblImage() {
+		if (lblImage == null) {
+			lblImage = new JLabel("");
+			lblImage.setBounds(0, 0, 59, 48);
+		}
+		return lblImage;
 	}
 }

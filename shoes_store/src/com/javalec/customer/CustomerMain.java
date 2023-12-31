@@ -5,20 +5,30 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.JobAttributes;
 
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 
+import com.javalec.base.Main;
 import com.javalec.util.ShareVar;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
+import javax.swing.JTable;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -27,8 +37,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.zone.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.Serializable;
+import java.security.KeyStore;
 
-public class CustomerMain {
+public class CustomerMain extends JFrame{
+	
 
 	private JFrame frame;
 	private JLabel lblNewLabel;
@@ -37,10 +52,17 @@ public class CustomerMain {
 	private JButton btnLogin;
 	private JButton btnRegis;
 	private JPasswordField pfPass;
+	private JLabel lblimage;
 
 	/**
 	 * Launch the application.
 	 */
+	
+	private int index;
+	private static final String[] IMAGES= {
+			"/com/javalec/images/신발가게.jpg"
+	};
+	
 	public static void main(String[] args) {
 		
 		
@@ -68,6 +90,12 @@ public class CustomerMain {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				icon();
+			}
+		});
 		frame.setBounds(100, 100, 617, 413);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -77,6 +105,7 @@ public class CustomerMain {
 		frame.getContentPane().add(getBtnLogin());
 		frame.getContentPane().add(getBtnRegis());
 		frame.getContentPane().add(getPfPass());
+		frame.getContentPane().add(getLblimage());
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
@@ -131,11 +160,30 @@ public class CustomerMain {
 					}
 				};
 			});
+			
+	
+			/*Action ok = new AbstractAction() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					login();
+					
+				}
+			};
+			KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0,false);
+			JTextField tf = new JTextField();
+			tf.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(enter, "ENTER");
+			tf.getActionMap().put("ENTER", ok);*/
+			
+			JTextField textField = new JTextField()
 			btnLogin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					login();
-				}
+				} 
 			});
+
+			
+			
 			btnLogin.setBounds(415, 222, 91, 23);
 		}
 		return btnLogin;
@@ -253,6 +301,29 @@ public class CustomerMain {
 		tfId.setText("");
 		pfPass.setText("");
 	}
+	private JLabel getLblimage() {
+		if (lblimage == null) {
+			lblimage = new JLabel("");
+			lblimage.setBounds(0, 0, 603, 376);
+		}
+		return lblimage;
+	}
+	
+	private void icon() {
+		ImageIcon icon =  new ImageIcon(IMAGES[0]);
+		Image i = icon.getImage();
+		Image s = i.getScaledInstance(603,376, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon icons =  new ImageIcon(s);
+		lblimage.setIcon(icons);
+		lblimage.setHorizontalAlignment(SwingConstants.CENTER);
+		frame.getContentPane().add(lblimage);	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 
 		}

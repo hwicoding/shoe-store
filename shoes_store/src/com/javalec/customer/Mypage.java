@@ -49,8 +49,6 @@ public class Mypage extends JDialog {
 	private JButton btnFile;
 	private JTextField tfFilepath;
 	private JLabel lblImage;
-	private JButton btnNewButton_1;
-	private JTextField textField;
 	
 	private int checkdialog=0;
 
@@ -105,8 +103,6 @@ public class Mypage extends JDialog {
 		getContentPane().add(getBtnFile());
 		getContentPane().add(getTfFilepath());
 		getContentPane().add(getLblImage());
-		getContentPane().add(getBtnNewButton_1());
-		getContentPane().add(getTextField());
 
 	}
 	
@@ -125,12 +121,13 @@ public class Mypage extends JDialog {
 		//System.out.println(filepath1);
 		tfFilepath.setText(filepath1);
 	
-		lblImage.setIcon(new ImageIcon(filepath1));
-		lblImage.setBounds(379, 167, 212, 164);
+		ImageIcon icon =  new ImageIcon(filepath1);
+		Image i = icon.getImage();
+		Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon icons =  new ImageIcon(s);
+		lblImage.setIcon(icons);
 		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-		
 		getContentPane().add(lblImage);
-		
 		setVisible(true);
 		
 		
@@ -268,7 +265,7 @@ public class Mypage extends JDialog {
 				}
 				}
 			);
-			btnFile.setBounds(448, 339, 91, 25);
+			btnFile.setBounds(433, 339, 91, 25);
 		}
 		return btnFile;}
 	
@@ -276,7 +273,7 @@ public class Mypage extends JDialog {
 		if (tfFilepath == null) {
 			tfFilepath = new JTextField();
 			tfFilepath.setEditable(false);
-			tfFilepath.setBounds(379, 374, 224, 21);
+			tfFilepath.setBounds(358, 374, 235, 21);
 			tfFilepath.setColumns(10);
 		}
 		return tfFilepath;
@@ -284,7 +281,7 @@ public class Mypage extends JDialog {
 	private JLabel getLblImage() {
 		if (lblImage == null) {
 			lblImage = new JLabel("");
-			lblImage.setBounds(379, 167, 212, 164);
+			lblImage.setBounds(358, 167, 235, 139);
 		}
 		return lblImage;
 	}
@@ -452,9 +449,14 @@ public class Mypage extends JDialog {
 				}
 				String FILEPATH = chooser.getSelectedFile().getPath();
 				tfFilepath.setText(FILEPATH);
-				System.out.println(FILEPATH);
-				lblImage.setIcon(new ImageIcon(FILEPATH));
+				ImageIcon icon =  new ImageIcon(FILEPATH);
+				Image i = icon.getImage();
+				Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+				ImageIcon icons =  new ImageIcon(s);
+				lblImage.setIcon(icons);
 				lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+				getContentPane().add(lblImage);
+				setVisible(true);
 				checkdialog=1;
 				}
 	
@@ -464,58 +466,5 @@ public class Mypage extends JDialog {
 		btnCheckpw.setEnabled(true);
 		pfPw.setEditable(true);
 		pfPw2.setEditable(true);
-	}
-	
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("회원탈퇴");
-			btnNewButton_1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					out();
-				}
-			});
-			btnNewButton_1.setBounds(0, 0, 91, 23);
-		}
-		return btnNewButton_1;
-	}
-	
-	private void out() {
-		String id =tfId.getText();
-		char[] pass =pfPw.getPassword();
-		String pw=new String(pass);
-		char[] pass1=pfPw2.getPassword();
-		String pw1 =  new String(pass1);
-		String name= tfName.getText();
-		String phone = tfPhone.getText();
-
-		FileInputStream input = null;
-		File file = new File(tfFilepath.getText());
-		try {
-			input= new FileInputStream(file);
-		}catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		Dao dao = new Dao(id, pw, name, phone, input);
-		boolean result = dao.out();
+	}}
 		
-		if(result==true) {
-			String msg = JOptionPane.showInputDialog("탈퇴하시려면 비밀번호를 입력하십시오", "");
-			if(msg.equals(ShareVar.password))
-				JOptionPane.showMessageDialog(null, tfId.getText()+"님의 탈퇴가 완료되었습니다");
-			else
-				JOptionPane.showMessageDialog(null, "정확한 값을 입력해 주십시오");
-			System.exit(0);
-		}else {
-			JOptionPane.showMessageDialog(null, "잘못되었습니다");
-		}
-	}
-	private JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setEditable(false);
-			textField.setColumns(10);
-			textField.setBounds(379, 374, 224, 21);
-		}
-		return textField;
-	}
-		}

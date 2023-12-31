@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.JobAttributes;
 
 import javax.swing.JTextField;
@@ -258,7 +259,9 @@ public class UserRegistration extends JDialog {
 		String login ="";
 		Dao dao = new Dao(id, pass);
 		boolean result = dao.check();
-		
+		if(id.equals("admin")) {
+			JOptionPane.showMessageDialog(null, "사용할 수 없는 아이디입니다");
+		}else {
 		if(result==false) {
 			JOptionPane.showMessageDialog(null, "중복입니다");
 		}else {
@@ -267,14 +270,15 @@ public class UserRegistration extends JDialog {
 			pfPw.setEditable(true);
 			pfPw2.setEditable(true);
 			btnConfirm.setEnabled(true);
-	
-		}	
 		}
+		}}	
+		
 	private void pwcheck() {
 		char[] pw = pfPw.getPassword();
 		String pass = new String(pw);
 		char[] pw1 = pfPw2.getPassword();
 		String pass2 = new String(pw1);
+		
 		
 		if(pass.length()==0||pass2.length()==0) {
 			JOptionPane.showMessageDialog(null, "비밀번호를 입력하세요");
@@ -358,10 +362,12 @@ public class UserRegistration extends JDialog {
 			}
 			String FILEPATH = chooser.getSelectedFile().getPath();
 			tfFilepath.setText(FILEPATH);
-			lblImage.setIcon(new ImageIcon(FILEPATH));
-			lblImage.setBounds(465, 177, 235, 139);
+			ImageIcon icon =  new ImageIcon(FILEPATH);
+			Image i = icon.getImage();
+			Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+			ImageIcon icons =  new ImageIcon(s);
+			lblImage.setIcon(icons);
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-			
 			getContentPane().add(lblImage);
 			setVisible(true);
 
