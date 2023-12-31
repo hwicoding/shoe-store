@@ -67,7 +67,8 @@ public class Lobby extends JDialog {
 			btnSetting = new JButton("");
 			btnSetting.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					checkpage();
+					//checkpage();
+					Mypage();
 				}
 			});
 			btnSetting.setIcon(new ImageIcon("C:\\Users\\qazxd\\Downloads\\cogwheel_114848 (1).png"));
@@ -77,9 +78,9 @@ public class Lobby extends JDialog {
 	}
 	
 	private void checkstatus() {
-		lblName.setText(ShareVar.name+"님 환영합니다.");
 		Dao dao = new Dao();
 		Dto dto =dao.Action2();
+		lblName.setText(dto.getUsername()+"님 환영합니다.");
 		String filepath1 = dto.getFilepath();
 		ImageIcon icon =  new ImageIcon(filepath1);
 		Image i = icon.getImage();
@@ -100,10 +101,17 @@ public class Lobby extends JDialog {
 		return lblName;
 	}
 	
-	private void checkpage() {
-		customerCheck user = new customerCheck();
-		user.setVisible(true);
+	//private void checkpage() {
+	//	customerCheck user = new customerCheck();
+	//	user.setVisible(true);
+	
+	
 		
+	//}
+	
+	private void Mypage() {
+		Mypage user = new Mypage();
+		user.setVisible(true);
 	}
 	private JButton getBtnNewButton() {
 		if (btnNewButton == null) {

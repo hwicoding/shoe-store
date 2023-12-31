@@ -91,9 +91,6 @@ public class customerCheck extends JDialog {
 		char[] pw1 = pfPW.getPassword();
 		String pass1 = new String(pw1);
 		
-		
-		
-		
 		if(pass.equals(pass1)) {
 			JOptionPane.showMessageDialog(null, "확인되었습니다");
 			Mypage();

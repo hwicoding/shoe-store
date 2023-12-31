@@ -12,6 +12,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -250,6 +252,7 @@ public class Mypage extends JDialog {
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					update();
+					
 				}
 			});
 			btnEdit.setBounds(227, 357, 91, 25);
@@ -334,11 +337,20 @@ public class Mypage extends JDialog {
 		char[] pw1 = pfPw2.getPassword();
 		String pass2 = new String(pw1);
 		int i=1;
+		final String SAMEPT="(\\w)\\1\\1";
+		Pattern ThreeChar=null;
+		ThreeChar = Pattern.compile("(\\p{Alnum})\\1{2,}");
+		Matcher matcher1;
+		matcher1 = ThreeChar.matcher(pass);
 		
-		if(pass.length()==0||pass2.length()==0) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 입력하세요");
+		if(pass.length()<4||pass2.length()>8) {
+			JOptionPane.showMessageDialog(null, "비밀번호를 4자리 이상 8자리 미만으로 입력하세요");
+			checkdialog=1;
 		}
-		
+		else if(matcher1.find()) {
+			JOptionPane.showMessageDialog(null, "동일한 문자나 숫자를 3개이상 사용하실 수 없습니다.");
+			checkdialog=1;
+		}
 		else if(pass.equals(pass2)) {
 			JOptionPane.showMessageDialog(null, "비밀번호가 일치합니다");
 			checkdialog=1;
@@ -349,7 +361,8 @@ public class Mypage extends JDialog {
 			btnEdit.setEnabled(true);
 			
 		}else {
-			JOptionPane.showMessageDialog(null, "비밀번호가 틀립니다");
+			JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다");
+			checkdialog=1;
 		}
 	}
 	

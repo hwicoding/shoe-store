@@ -21,6 +21,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 
 public class UserRegistration extends JDialog {
@@ -259,7 +261,7 @@ public class UserRegistration extends JDialog {
 		String login ="";
 		Dao dao = new Dao(id, pass);
 		boolean result = dao.check();
-		if(id.equals("admin")) {
+		if(id.contains("admin")) {
 			JOptionPane.showMessageDialog(null, "사용할 수 없는 아이디입니다");
 		}else {
 		if(result==false) {
@@ -278,12 +280,31 @@ public class UserRegistration extends JDialog {
 		String pass = new String(pw);
 		char[] pw1 = pfPw2.getPassword();
 		String pass2 = new String(pw1);
+		final String SAMEPT="(\\w)\\1\\1";
+		Pattern ThreeChar=null;
+		ThreeChar = Pattern.compile("(\\p{Alnum})\\1{2,}");
+		//Matcher matcher;
+		Matcher matcher1;
+		//matcher = Pattern.compile(SAMEPT).matcher(pass);
+		matcher1 = ThreeChar.matcher(pass);
+		//String listchar ="abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789|890";
+		//String[] arrlistchar = listchar.split("\\|");
+		//for(int i=0;i<arrlistchar.length;i++) {
+		//	if(pass.toLowerCase().matches(".*"+arrlistchar[i]+".*")) {
+		//		JOptionPane.showMessageDialog(null, "연속된 3자리 숫자나 문자 사용불가");
+		//	}
+		//}
 		
 		
-		if(pass.length()==0||pass2.length()==0) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 입력하세요");
+		if(pass.length()<4||pass2.length()>8) {
+			JOptionPane.showMessageDialog(null, "비밀번호를 4자리 이상 8자리 미만으로 입력하세요");
 		}
-		
+		else if(matcher1.find()) {
+			JOptionPane.showMessageDialog(null, "동일한 문자나 숫자를 3개이상 사용하실 수 없습니다.");
+		}
+		//else if(matcher.find()) {
+		//	JOptionPane.showMessageDialog(null, "동일한 문자를 3개이상 연속으로 사용할 수 없습니다.");
+		//}
 		else if(pass.equals(pass2)) {
 			JOptionPane.showMessageDialog(null, "비밀번호가 일치합니다");
 			tfName.setEditable(true);
@@ -293,7 +314,7 @@ public class UserRegistration extends JDialog {
 			pfPw2.setEditable(false);
 			
 		}else {
-			JOptionPane.showMessageDialog(null, "비밀번호가 틀립니다");
+			JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 		}
 	}
 	private void okaction() {
