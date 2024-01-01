@@ -1,6 +1,7 @@
 package com.javalec.productShin;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -8,7 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
-import com.javalec.cart.Cart;
+import com.javalec.cartShin.Cart;
+import com.javalec.purchaseShin.OrderPage;
 import com.javalec.sale.SaleDao;
 import com.javalec.sale.SaleDto;
 import com.javalec.util.ShareVar;
@@ -44,7 +46,7 @@ public class BuyPage extends JDialog {
 	private JLabel lblNewLabel_1_1_1_1;
 	private JLabel lblNewLabel_1_1_1_1_1;
 	private JButton btnNewButton;
-	private JButton btnNewButton_2;
+	private JButton btnBack;
 	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_1_1_1_1_2;
 	private JTextField tfCount;
@@ -87,7 +89,7 @@ public class BuyPage extends JDialog {
 		getContentPane().add(getLblNewLabel_1_1_1_1());
 		getContentPane().add(getLblNewLabel_1_1_1_1_1());
 		getContentPane().add(getBtnNewButton());
-		getContentPane().add(getBtnNewButton_2());
+		getContentPane().add(getBtnBack());
 		getContentPane().add(getLblNewLabel_2());
 		getContentPane().add(getLblNewLabel_1_1_1_1_2());
 		getContentPane().add(getTfCount());
@@ -172,26 +174,40 @@ public class BuyPage extends JDialog {
 					btnCartClicked();
 				}
 			});
-			btnNewButton.setBounds(775, 353, 121, 52);
+			btnNewButton.setBounds(775, 353, 95, 23);
 		}
 		return btnNewButton;
 	}
-	private JButton getBtnNewButton_2() {
-		if (btnNewButton_2 == null) {
-			btnNewButton_2 = new JButton("뒤로가기");
-			btnNewButton_2.addActionListener(new ActionListener() {
+	private JButton getBtnBack() {
+		if (btnBack == null) {
+			btnBack = new JButton("");
+			
+
+			ImageIcon icon = new ImageIcon(BuyPage.class.getResource("/com/javalec/images/backIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnBack.setIcon(changeIcon);
+			btnBack.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			btnBack.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					clickedBackIcon();
 				}
 			});
-			btnNewButton_2.setBounds(40, 23, 80, 42);
+			btnBack.setBounds(10, 10, 40, 40);
 		}
-		return btnNewButton_2;
+		return btnBack;
 	}
 	private JLabel getLblNewLabel_2() {
 		if (lblNewLabel_2 == null) {
-			lblNewLabel_2 = new JLabel("로고");
-			lblNewLabel_2.setBounds(328, 34, 165, 31);
+			lblNewLabel_2 = new JLabel("");
+			
+			ImageIcon icon = new ImageIcon(BuyPage.class.getResource("/com/javalec/images/shoeLogo.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			lblNewLabel_2.setIcon(changeIcon);
+			lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel_2.setBounds(60, 8, 50, 50);
 		}
 		return lblNewLabel_2;
 	}
@@ -209,7 +225,7 @@ public class BuyPage extends JDialog {
 				@Override
 				public void keyPressed(KeyEvent e) {
 					if((e.getKeyChar() >= '0' && e.getKeyChar() <= '9' ) || e.getKeyCode() == KeyEvent.VK_CAPS_LOCK ||
-						e.getKeyCode() == KeyEvent.VK_ENTER) {
+						e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 					} else {
 						JFrame jframe = new JFrame();
 						jframe.setAlwaysOnTop(true);
@@ -230,8 +246,6 @@ public class BuyPage extends JDialog {
 	
 	//SearchPage에서 브랜드 상품명 가격을 가지고 창이 열릴 때 정보 뿌려주는 메소드 
 	public void selectByinfo(List<String> list) {
-		
-		SearchPage page = new SearchPage();
 		
 		tfBrand.setText(list.get(0));
 		tfName.setText(list.get(1));
@@ -304,17 +318,57 @@ public class BuyPage extends JDialog {
 	
 	//장바구니 버튼 클릭했을 떼 
 	private void btnCartClicked() {
-		
+		JFrame jframe = new JFrame();
+		jframe.setAlwaysOnTop(true);
+		ProductDAO dao = new ProductDAO();
 		if(checkField() == true) {
-			getAllInfo();
-			this.dispose();
-			Cart cart = new Cart();
-			cart.setVisible(true);
+			String tmBrand = tfBrand.getText();
+			String tmName = tfName.getText();
+			int tmSize = Integer.parseInt((String)cbSize.getSelectedItem());
+			String tmColor = (String)cbColor.getSelectedItem();
+			int tmCartCount = Integer.parseInt(tfCount.getText());
+			
+			
+//			getAllInfo();
+//			this.dispose();
+//			Cart cart = new Cart();
+//			cart.setVisible(true);
+			int currentStock = dao.selectCurrentStock(tmBrand, tmName, tmSize, tmColor, tmCartCount);
+			if(currentStock >= tmCartCount) {
+			
+				//먼저 수량만큼 제품 브랜드 사이즈 컬러 orderProd 마이너스 insert 처리, ]
+				if(dao.insertOrderProdWhenClickedBtn(tmBrand, tmName, tmSize, tmColor, tmCartCount) == true) {
+					System.out.println("success into BuyPage[insertOrderProdWhenClickedBtn]");
+					int insertedOseq = dao.oseqByInsertedOrderProd(tmBrand, tmName, tmSize, tmColor, tmCartCount);	//insert한 orderProd의 oseq를 가져
+				
+					//insert된 oseq를 가지고 produc에 제품 tmBrand 
+					if(dao.insertProductQy(insertedOseq, tmBrand, tmName, tmSize) == true) {
+						getAllInfo();
+						this.dispose();
+						Cart cart = new Cart();
+						cart.setVisible(true);
+						System.out.println("이츠 성공!!");
+						System.out.println(tmBrand + "/" + tmName + "/" + tmSize + "/" + tmColor +"/"+tmCartCount+"추가");
+					} else {
+						System.out.println("오우 노우 제발 ..");
+					}
+				}
+			} else if(currentStock == 0) {
+				JOptionPane.showMessageDialog(jframe, "현재 재고는 "+currentStock+"개 입니다. 관리자에게 문의바랍니다.");
+				tfCount.setText("");
+				tfCount.requestFocus();
+			} else {
+				JOptionPane.showMessageDialog(jframe, "현재 재고는 "+currentStock+"개 입니다. 수량을 다시 입력하시거나 관리자에게 문의바랍니다.");
+				tfCount.setText("");
+				tfCount.requestFocus();
+			}
+		
 		} 
-		return;
 	}
 	
 	//field 체크 메소드 
+	//****************************************** 수량 입력했을 때, orderProd의 수량보다 많이 입력햇을 때, 알림창 뜨도록 만들어야
+	// ... orderProd 제품명, 브랜드명, 마지막을 꺼내야함... 꺼내서 수량체 
 	private boolean checkField() {
 		JFrame jframe = new JFrame();
 		jframe.setAlwaysOnTop(true);
@@ -334,23 +388,9 @@ public class BuyPage extends JDialog {
 		return false;
 	}
 	
-	//입력된 모든 정보 가져오기 
-//	public void getAllInfo() {
-//		
-//		String brand = tfBrand.getText();
-//		String name = tfName.getText();
-//		int price = Integer.parseInt(tfPrice.getText());
-//		int size = (Integer) cbSize.getSelectedItem();
-//		int cnt = Integer.parseInt(tfCount.getText());
-//		String color = (String) cbColor.getSelectedItem();
-//
-//		ProductDAO dao = new ProductDAO(brand, name, price, size, cnt, color);
-//		ArrayList <ProductDTO> dtoList = dao.getAllInfo();
-//		ShareVar.prodList.add(dtoList);
-//		
-//	}
-
 	
+	
+	//buypage에서 입력한 수량과 그 제품의 seq를 조회
 	public List<String> getAllInfo() {
 		String brand = tfBrand.getText();
 		String name = tfName.getText();
@@ -358,15 +398,8 @@ public class BuyPage extends JDialog {
 		int size = Integer.parseInt(cbSize.getSelectedItem().toString());
 		int cnt = Integer.parseInt(tfCount.getText());
 		String color = cbColor.getSelectedItem().toString();
-		
 
 		ProductDAO dao = new ProductDAO(brand, name, price, size, cnt, color);
-		
-		/**********************************************************************************
-		 * 
-		 * 나중에 지워줘야함~!~!!~!~!~!~!~!~!
-		 * 
-		 *********************************************************************************/
 		
 		int cartBtnClickedBySeq = dao.getAllInfo();
 		
@@ -385,5 +418,26 @@ public class BuyPage extends JDialog {
 		return list;
 	}
 		
+	
+	//getAllInfo()실행 전에 product에 orderProd insert 처리
+	
+	
+//	
+//	if(	dao.insertToOrderProduct(brand, name, cnt, size, color)) {
+//		
+//		//insert된 orderProd의 oseq 가져오기
+//		System.out.println("OrderPage[inseredOseq] start");
+//		int inseredOseq =dao.getInsertedOseq(brand, name, cnt, size, color);
+//		System.out.println("OrderPage[inseredOseq] inseredOseq : "+inseredOseq);
+//		System.out.println("OrderPage[inseredOseq] end");
+//		
+//		//위의 oseq를 가지고 product에 insert 
+//		if(dao.insertProductQuery(inseredOseq,brand, name, size)) {
+//			System.out.println("성공성공");
+//			System.out.println(brand + "/" + name + "/" + size + "/" + color +"/"+cnt+"추가");
+//		}
+//	} else {
+//		System.out.println("실패....");
+//	}
 	
 }

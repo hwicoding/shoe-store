@@ -6,16 +6,20 @@ import java.awt.Image;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import com.javalec.adminOrder.AdminOrderDao;
+import com.javalec.adminOrder.AdminOrderDto;
 import com.javalec.base.Main;
-import com.javalec.cart.Cart;
-import com.javalec.purchase.OrderPage;
+import com.javalec.cartShin.Cart;
+import com.javalec.purchaseShin.OrderPage;
 import com.javalec.util.ShareVar;
 
 import javax.swing.JScrollPane;
@@ -23,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.MouseAdapter;
@@ -37,19 +42,20 @@ public class SearchPage extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel lblImage;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
+	private JButton btnLogout;
+	private JButton btnUserInfo;
 	private JComboBox cbSelection;
 	private JTextField tfSelection;
 	private JButton btnQuery;
-	private JScrollPane scrollPane;
-	private JTable innerTable;
 	private JButton btnNewButton_3;
 	private JButton btnNewButton_3_1;
 	
 //	outerTable 생성
 	private final DefaultTableModel outerTable = new DefaultTableModel();
 	private JButton btnCart;
+	private JButton btnPurchase;
+	private JScrollPane scrollPane;
+	private JTable innerTable;
 
 	/**
 	 * Launch the application.
@@ -58,6 +64,7 @@ public class SearchPage extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ShareVar.userid = "aaa";
 					SearchPage dialog = new SearchPage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
@@ -72,6 +79,8 @@ public class SearchPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public SearchPage() {
+		getContentPane().setBackground(new Color(29, 84, 141));
+		setBackground(new Color(64, 62, 255));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -80,96 +89,102 @@ public class SearchPage extends JDialog {
 				searchAction();
 			}
 		});
-		setTitle("검색창");
-		setBounds(100, 100, 658, 880);
+		setTitle("메인화면");
+		setBounds(100, 100, 770, 519);
 		getContentPane().setLayout(null);
 		getContentPane().add(getLblImage());
-		getContentPane().add(getBtnNewButton());
-		getContentPane().add(getBtnNewButton_1());
+		getContentPane().add(getBtnLogout());
+		getContentPane().add(getBtnUserInfo());
 		getContentPane().add(getCbSelection());
 		getContentPane().add(getTfSelection());
 		getContentPane().add(getBtnQuery());
-		getContentPane().add(getScrollPane());
 		getContentPane().add(getBtnNewButton_3());
 		getContentPane().add(getBtnNewButton_3_1());
 		getContentPane().add(getBtnCart());
+		getContentPane().add(getBtnPurchase());
+		getContentPane().add(getScrollPane_1());
 
 	}
 	private JLabel getLblImage() {
 		if (lblImage == null) {
-			lblImage = new JLabel("로고 이미지");
-			lblImage.setIcon(new ImageIcon(SearchPage.class.getResource("/com/javalec/images/shoeLogo.png")));
+			lblImage = new JLabel("");
+			
+			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/logo.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(360, 380, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			lblImage.setIcon(changeIcon);
+			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+			lblImage.setBounds(200, 10, 360, 150);
 			
 		}
 		return lblImage;
 	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("Log-out");
-			btnNewButton.addActionListener(new ActionListener() {
+	private JButton getBtnLogout() {
+		if (btnLogout == null) {
+			btnLogout = new JButton("");
+			
+			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/logougIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnLogout.setIcon(changeIcon);
+			btnLogout.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			btnLogout.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					clickedLogoutBtn();
 				}
 			});
-			btnNewButton.setBounds(23, 51, 95, 23);
+			btnLogout.setBounds(720, 10, 40, 40);
+			
 		}
-		return btnNewButton;
+		return btnLogout;
 	}
-	private JButton getBtnNewButton_1() {
-		if (btnNewButton_1 == null) {
-			btnNewButton_1 = new JButton("회원정보 정보 버튼");
-			btnNewButton_1.setBounds(479, 38, 147, 49);
+	private JButton getBtnUserInfo() {
+		if (btnUserInfo == null) {
+			btnUserInfo = new JButton("");
+			
+			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/profileIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnUserInfo.setIcon(changeIcon);
+			btnUserInfo.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			btnUserInfo.setBounds(670, 10, 40, 40);
 		}
-		return btnNewButton_1;
+		return btnUserInfo;
 	}
 	private JComboBox getCbSelection() {
 		if (cbSelection == null) {
 			cbSelection = new JComboBox();
 			cbSelection.setEditable(true);
 			cbSelection.setModel(new DefaultComboBoxModel(new String[] {"브랜드", "제품명", "사이즈"}));
-			cbSelection.setBounds(23, 143, 95, 23);
+			cbSelection.setBounds(32, 157, 95, 30);
 		}
 		return cbSelection;
 	}
 	private JTextField getTfSelection() {
 		if (tfSelection == null) {
 			tfSelection = new JTextField();
-			tfSelection.setBounds(144, 144, 343, 21);
+			tfSelection.setBounds(132, 157, 200, 30);
 			tfSelection.setColumns(10);
 		}
 		return tfSelection;
 	}
 	private JButton getBtnQuery() {
 		if (btnQuery == null) {
-			btnQuery = new JButton("검색");
-			btnQuery.setBounds(531, 143, 95, 23);
+			btnQuery = new JButton("");
+			btnQuery.setBounds(338, 157, 30, 30);
+			
+			ImageIcon icon = new ImageIcon(OrderPage.class.getResource("/com/javalec/images/searchIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnQuery.setIcon(changeIcon);
+			btnQuery.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			
+			
 		}
 		return btnQuery;
-	}
-	private JScrollPane getScrollPane() {
-		if (scrollPane == null) {
-			scrollPane = new JScrollPane();
-			scrollPane.setEnabled(false);
-			scrollPane.setBounds(23, 201, 603, 525);
-			scrollPane.setViewportView(getInnerTable());
-		}
-		return scrollPane;
-	}
-	private JTable getInnerTable() {
-		if (innerTable == null) {
-			innerTable = new JTable();
-			innerTable.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					tableClick();
-				}
-			});
-			innerTable.setFillsViewportHeight(true);
-			innerTable.setBorder(new LineBorder(new Color(0, 0, 0)));
-			innerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			innerTable.setModel(outerTable);
-		}
-		return innerTable;
 	}
 	private JButton getBtnNewButton_3() {
 		if (btnNewButton_3 == null) {
@@ -188,15 +203,69 @@ public class SearchPage extends JDialog {
 	
 	private JButton getBtnCart() {
 		if (btnCart == null) {
-			btnCart = new JButton("장바구니");
+			btnCart = new JButton("");
+			
+			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/cartIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnCart.setIcon(changeIcon);
+			btnCart.setHorizontalAlignment(SwingConstants.CENTER);
+			
 			btnCart.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					btnCartClicked();
 				}
 			});
-			btnCart.setBounds(23, 95, 95, 23);
+			btnCart.setBounds(570, 10, 40, 40);
+			
 		}
 		return btnCart;
+	}
+	
+	private JButton getBtnPurchase() {
+		if (btnPurchase == null) {
+			btnPurchase = new JButton("");
+			
+			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/orderIcon.png"));
+			Image changeToImg = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			btnPurchase.setIcon(changeIcon);
+			btnPurchase.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			btnPurchase.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					goToOrderPage(); 
+				}
+			});
+			btnPurchase.setBounds(620, 10, 40, 40);
+			
+		}
+		return btnPurchase;
+	}
+	
+	private JScrollPane getScrollPane_1() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setBounds(33, 200, 700, 250);
+			scrollPane.setViewportView(getInnerTable());
+		}
+		return scrollPane;
+	}
+	
+	private JTable getInnerTable() {
+		if (innerTable == null) {
+			innerTable = new JTable();
+			innerTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tableClick();
+				}
+			});
+			innerTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			innerTable.setModel(outerTable);
+		}
+		
+		return innerTable;
 	}
 	
 //---	Function  ---
@@ -226,18 +295,16 @@ public class SearchPage extends JDialog {
 		width = 200;
 		col.setPreferredWidth(width);
 		
-		innerTable.setAutoResizeMode(innerTable.AUTO_RESIZE_OFF);
+		//innerTable.setAutoResizeMode(innerTable.AUTO_RESIZE_OFF);
 		
-		
-		
-// Table 내용 지우기
+		// Table 내용 지우기
 		int i = outerTable.getRowCount();
 		for(int j = 0; j<i; j++) {
 			outerTable.removeRow(0);
 		}
 	}
 	
-//	검색	
+	//	검색	
 	private void searchAction() {
 		ProductDAO dao = new ProductDAO();
 		ArrayList<ProductDTO> dtoList = dao.selecList();
@@ -245,10 +312,14 @@ public class SearchPage extends JDialog {
 		int listCount = dtoList.size();
 		
 		for(int i = 0; i < listCount; i++) {
+			DecimalFormat decFormat = new DecimalFormat("###,###");
+			int tmp3 = dtoList.get(i).getPrice();
+			String tmPrice = decFormat.format(tmp3);
+			
 			String[] qTxt = {
 									 dtoList.get(i).getBrand(),
 									 dtoList.get(i).getName(),
-									 Integer.toString(dtoList.get(i).getPrice())};
+									 tmPrice};
 			outerTable.addRow(qTxt);
 		}
 	}
@@ -258,24 +329,32 @@ public class SearchPage extends JDialog {
 	private  List<String> tableClick() {
 		int i = innerTable.getSelectedRow();
 		
+		System.out.println("dtdt : tableclick2 I : "+i );
 		List<String> array = new ArrayList<>();
 		
-		String tkBrand = (String)innerTable.getValueAt(i, 0);
-		String tkName = (String)innerTable.getValueAt(i, 1);
-		int tkPrice = Integer.parseInt((String) innerTable.getValueAt(i, 2));
-		
-		ProductDAO dao = new ProductDAO(tkBrand, tkName, tkPrice);
-		ProductDTO dto = dao.tableClick();
-		
-		array.add(dto.getBrand());
-		array.add(dto.getName());
-		array.add(Integer.toString(dto.getPrice()));
-		
-		dispose();
-		
-		BuyPage buyPage = new BuyPage();
-		buyPage.setVisible(true);
-		buyPage.selectByinfo(array);
+		if(i >= 0) {
+			String tkBrand = (String)innerTable.getValueAt(i, 0);
+			String tkName = (String)innerTable.getValueAt(i, 1);
+			String tmp = (String)innerTable.getValueAt(i, 2);
+			String tmPrice = tmp.replaceAll(",", "");
+			
+			
+			int tkPrice = Integer.parseInt(tmPrice);
+			
+			
+			ProductDAO dao = new ProductDAO(tkBrand, tkName, tkPrice);
+			ProductDTO dto = dao.tableClick();
+			
+			array.add(dto.getBrand());
+			array.add(dto.getName());
+			array.add(Integer.toString(dto.getPrice()));
+			
+			dispose();
+			
+			BuyPage buyPage = new BuyPage();
+			buyPage.setVisible(true);
+			buyPage.selectByinfo(array);
+		} 
 		
 		return array;
 		
@@ -290,8 +369,14 @@ public class SearchPage extends JDialog {
 	
 	private void btnCartClicked() {
 		this.dispose();
-		ShareVar.userid = "aaa";
 		Cart cart = new Cart();
 		cart.setVisible(true);
 	}
+
+	private void goToOrderPage() {
+		this.dispose();
+		OrderPage orderPage = new OrderPage();
+		orderPage.setVisible(true);
+	}
+	
 }
