@@ -5,12 +5,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JTextField;
 
 import com.javalec.util.ShareVar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
@@ -28,6 +32,7 @@ public class CustomerMain {
 	private JButton btnNewButton;
 	private JButton btnNewButton_1;
 	private JPasswordField pfPW;
+	private JLabel lblimage;
 
 	/**
 	 * Launch the application.
@@ -71,6 +76,7 @@ public class CustomerMain {
 		frame.getContentPane().add(getBtnNewButton());
 		frame.getContentPane().add(getBtnNewButton_1());
 		frame.getContentPane().add(getPfPW());
+		frame.getContentPane().add(getLblimage());
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
@@ -218,6 +224,14 @@ public class CustomerMain {
 		user.setVisible(true);
 		
 		
+	}
+	private JLabel getLblimage() {
+		if (lblimage == null) {
+			lblimage = new JLabel(""); 
+			lblimage.setIcon(new ImageIcon(CustomerMain.class.getResource("/com/javalec/images/신발가게.jpg")));
+			lblimage.setBounds(0, -20,618 ,410 );
+		}
+		return lblimage;
 	}
 }
 	
