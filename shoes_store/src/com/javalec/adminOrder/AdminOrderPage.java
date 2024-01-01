@@ -120,6 +120,7 @@ public class AdminOrderPage extends JDialog {
 		});
 		setTitle("제품 검색/등록/수정/삭제");
 		setBounds(100, 100, 448, 560);
+		
 		setJMenuBar(getMenuBar());
 		getContentPane().setLayout(null);
 		getContentPane().add(getRbSelect());
@@ -479,7 +480,7 @@ public class AdminOrderPage extends JDialog {
 		col.setPreferredWidth(150);
 
 		col = innerTable.getColumnModel().getColumn(3);
-		col.setPreferredWidth(80);
+		col.setPreferredWidth(150);
 		
 		col = innerTable.getColumnModel().getColumn(4);
 		col.setPreferredWidth(80);

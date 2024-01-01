@@ -68,14 +68,17 @@ public class AdminOrderDao {
 
 	public ArrayList<AdminOrderDto> searchAction() {
 		ArrayList<AdminOrderDto> dtoList = new ArrayList<AdminOrderDto>();
-		String query = "select oseq, obrand, oname, oprice, ocnt, osize, ocolor from orderProd order by obrand";
+		
+		String query1="select f.oseq, f.obrand, f.oname, f.oprice, f.ocnt, f.osize, f.ocolor from (select obrand, oname, min(oseq) as minoseq, osize, oprice, ocolor ";
+		String query2="	from orderProd group by obrand, oname, oprice, osize, ocolor) as x inner join orderProd f on f.obrand = x.obrand and f.oname = x.oname ";
+		String query3="	and f.osize = x.osize and f.ocolor = x.ocolor and f.oseq = x.minoseq where f.oprice != ''"+" and f.osize != '' order by f.obrand, f.oname";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, id, pw);
 			Statement stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery(query);
+			ResultSet rs = stmt.executeQuery(query1 + query2 + query3);
 			
 			while(rs.next()) {
 				int wkSeq = rs.getInt(1);
