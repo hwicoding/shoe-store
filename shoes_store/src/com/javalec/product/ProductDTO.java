@@ -13,18 +13,30 @@ public class ProductDTO {
 	public ProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 
-	public ProductDTO(int seqno, String brand, String name, int price) {
+
+	public ProductDTO(String brand, String name, int price) {
 	super();
-	this.seqno = seqno;
 	this.brand = brand;
 	this.name = name;
 	this.price = price;
 
-}
+}	
+	
+	public ProductDTO(String color) {
+		super();
+		this.color = color;
+	}
+
+
+
+	public ProductDTO(int size) {
+		super();
+		this.size = size;
+	}
+
+
 
 	public ProductDTO(int seqno, int size, int count, int price, String brand, String name, String color) {
 		super();

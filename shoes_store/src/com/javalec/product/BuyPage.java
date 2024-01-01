@@ -4,35 +4,49 @@ import java.awt.EventQueue;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import com.javalec.cart.Cart;
+import com.javalec.util.ShareVar;
+
 import java.awt.Color;
+import java.awt.Container;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
 
 public class BuyPage extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel lblImage;
 	private JLabel lblNewLabel_1;
-	private JTextField tfBrand;
 	private JLabel lblNewLabel_1_1;
 	private JTextField tfName;
 	private JLabel lblNewLabel_1_1_1;
 	private JTextField tfPrice;
 	private JLabel lblNewLabel_1_1_1_1;
 	private JLabel lblNewLabel_1_1_1_1_1;
-	private JButton btnNewButton;
-	private JButton btnNewButton_2;
+	private JButton btnCartPage;
+	private JButton btnSearchPage;
 	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_1_1_1_1_2;
-	private JTextField tfSize;
 	private JTextField tfCount;
-	private JTextField tfColor;
-	private JLabel lblNewLabel;
-	private JTextField tfSeqno;
+	private JTextField tfBrand;
+	private JComboBox<Object> cbColor;
+	private JComboBox<Object> cbSize;
+	private Container container ;;
 
 	/**
 	 * Launch the application.
@@ -60,40 +74,36 @@ public class BuyPage extends JDialog {
 			@Override
 			public void windowActivated(WindowEvent e) {
 				
-				//selectByinfo( );
-				
 			}
 		});
 		setTitle("구매 페이지");
-		setBounds(100, 100, 973, 489);
+		setBounds(100, 100, 973, 521);
 		getContentPane().setLayout(null);
 		getContentPane().add(getLblImage());
 		getContentPane().add(getLblNewLabel_1());
-		getContentPane().add(getTfBrand());
 		getContentPane().add(getLblNewLabel_1_1());
 		getContentPane().add(getTfName());
 		getContentPane().add(getLblNewLabel_1_1_1());
 		getContentPane().add(getTfPrice());
 		getContentPane().add(getLblNewLabel_1_1_1_1());
 		getContentPane().add(getLblNewLabel_1_1_1_1_1());
-		getContentPane().add(getBtnNewButton());
-		getContentPane().add(getBtnNewButton_2());
+		getContentPane().add(getBtnCartPage());
+		getContentPane().add(getBtnSearchPage());
 		getContentPane().add(getLblNewLabel_2());
 		getContentPane().add(getLblNewLabel_1_1_1_1_2());
-		getContentPane().add(getTfSize());
 		getContentPane().add(getTfCount());
-		getContentPane().add(getTfColor());
-		getContentPane().add(getLblNewLabel());
-		getContentPane().add(getTfSeqno());
+//		getContentPane().add(getCbSIze());
+		getContentPane().add(getTfBrand());
+//		getContentPane().add(getCbColor_01());
+//		getContentPane().add(getCbColor());
 
 	}
 	private JLabel getLblImage() {
 		if (lblImage == null) {
 			lblImage = new JLabel("이미지");
-			lblImage.setEnabled(false);
 			lblImage.setBackground(new Color(255, 128, 64));
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-			lblImage.setBounds(42, 80, 535, 340);
+			lblImage.setBounds(27, 194, 535, 259);
 		}
 		return lblImage;
 	}
@@ -104,28 +114,19 @@ public class BuyPage extends JDialog {
 		}
 		return lblNewLabel_1;
 	}
-	private JTextField getTfBrand() {
-		if (tfBrand == null) {
-			tfBrand = new JTextField();
-			tfBrand.setEnabled(false);
-			tfBrand.setBounds(658, 85, 248, 21);
-			tfBrand.setColumns(10);
-		}
-		return tfBrand;
-	}
 	private JLabel getLblNewLabel_1_1() {
 		if (lblNewLabel_1_1 == null) {
 			lblNewLabel_1_1 = new JLabel("상품명");
-			lblNewLabel_1_1.setBounds(602, 130, 61, 21);
+			lblNewLabel_1_1.setBounds(602, 131, 61, 21);
 		}
 		return lblNewLabel_1_1;
 	}
 	private JTextField getTfName() {
 		if (tfName == null) {
 			tfName = new JTextField();
-			tfName.setEnabled(false);
+			tfName.setEditable(false);
 			tfName.setColumns(10);
-			tfName.setBounds(658, 130, 248, 21);
+			tfName.setBounds(659, 131, 248, 21);
 		}
 		return tfName;
 	}
@@ -139,9 +140,9 @@ public class BuyPage extends JDialog {
 	private JTextField getTfPrice() {
 		if (tfPrice == null) {
 			tfPrice = new JTextField();
-			tfPrice.setEnabled(false);
+			tfPrice.setEditable(false);
 			tfPrice.setColumns(10);
-			tfPrice.setBounds(658, 181, 91, 21);
+			tfPrice.setBounds(659, 181, 120, 21);
 		}
 		return tfPrice;
 	}
@@ -155,96 +156,198 @@ public class BuyPage extends JDialog {
 	private JLabel getLblNewLabel_1_1_1_1_1() {
 		if (lblNewLabel_1_1_1_1_1 == null) {
 			lblNewLabel_1_1_1_1_1 = new JLabel("수량");
-			lblNewLabel_1_1_1_1_1.setBounds(770, 231, 44, 21);
+			lblNewLabel_1_1_1_1_1.setBounds(602, 289, 44, 21);
 		}
 		return lblNewLabel_1_1_1_1_1;
 	}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("장바구니 담기");
-			btnNewButton.setBounds(775, 353, 121, 52);
+	private JButton getBtnCartPage() {
+		if (btnCartPage == null) {
+			btnCartPage = new JButton("장바구니 담기");
+			btnCartPage.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+//					창 종료
+					dispose();
+					
+//					Cart Page 로 이동
+					Cart cart = new Cart();
+					cart.main(null);
+					
+				}
+			});
+			btnCartPage.setBounds(785, 352, 121, 52);
 		}
-		return btnNewButton;
+		return btnCartPage;
 	}
-	private JButton getBtnNewButton_2() {
-		if (btnNewButton_2 == null) {
-			btnNewButton_2 = new JButton("뒤로가기");
-			btnNewButton_2.setBounds(40, 23, 80, 42);
+	private JButton getBtnSearchPage() {
+		if (btnSearchPage == null) {
+			btnSearchPage = new JButton("뒤로가기");
+			btnSearchPage.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+//					창 종료
+					dispose();
+					
+//					Search Page 로 이동
+					SearchPage searchPage = new SearchPage();
+					searchPage.setVisible(true);
+					
+				}
+			});
+			btnSearchPage.setBounds(27, 24, 97, 42);
 		}
-		return btnNewButton_2;
+		return btnSearchPage;
 	}
 	private JLabel getLblNewLabel_2() {
 		if (lblNewLabel_2 == null) {
-			lblNewLabel_2 = new JLabel("로고");
-			lblNewLabel_2.setBounds(328, 34, 165, 31);
+			lblNewLabel_2 = new JLabel("");
+			lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel_2.setIcon(new ImageIcon(BuyPage.class.getResource("/com/javalec/images/shoes_logo.png")));
+			lblNewLabel_2.setBounds(350, 10, 160, 163);
 		}
 		return lblNewLabel_2;
 	}
 	private JLabel getLblNewLabel_1_1_1_1_2() {
 		if (lblNewLabel_1_1_1_1_2 == null) {
 			lblNewLabel_1_1_1_1_2 = new JLabel("색상");
-			lblNewLabel_1_1_1_1_2.setBounds(602, 280, 61, 21);
+			lblNewLabel_1_1_1_1_2.setBounds(768, 231, 44, 21);
 		}
 		return lblNewLabel_1_1_1_1_2;
 	}
-	private JTextField getTfSize() {
-		if (tfSize == null) {
-			tfSize = new JTextField();
-			tfSize.setEnabled(false);
-			tfSize.setBounds(658, 230, 91, 21);
-			tfSize.setColumns(10);
+	
+	private JTextField getTfBrand() {
+		if (tfBrand == null) {
+			tfBrand = new JTextField();
+			tfBrand.setEditable(false);
+			tfBrand.setBounds(659, 85, 247, 21);
+			tfBrand.setColumns(10);
 		}
-		return tfSize;
+		return tfBrand;
 	}
+	
+	
 	private JTextField getTfCount() {
 		if (tfCount == null) {
 			tfCount = new JTextField();
-			tfCount.setEnabled(false);
 			tfCount.setColumns(10);
-			tfCount.setBounds(815, 230, 91, 21);
+			tfCount.setBounds(659, 289, 91, 21);
 		}
 		return tfCount;
 	}
-	private JTextField getTfColor() {
-		if (tfColor == null) {
-			tfColor = new JTextField();
-			tfColor.setEnabled(false);
-			tfColor.setColumns(10);
-			tfColor.setBounds(658, 280, 91, 21);
-		}
-		return tfColor;
-	}
 	
-	private JLabel getLblNewLabel() {
-		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("번호");
-			lblNewLabel.setBounds(602, 42, 52, 15);
-		}
-		return lblNewLabel;
-	}
-	private JTextField getTfSeqno() {
-		if (tfSeqno == null) {
-			tfSeqno = new JTextField();
-			tfSeqno.setEnabled(false);
-			tfSeqno.setBounds(658, 39, 33, 21);
-			tfSeqno.setColumns(10);
-		}
-		return tfSeqno;
-	}
 	
-	public void selectByinfo(int wkSequence) {
-		
-		ProductDAO dao = new ProductDAO(wkSequence);
-		ProductDTO dto = dao.tableClick();
-		
-		tfSeqno.setText(Integer.toString(dto.getSeqno()));
-		tfBrand.setText(dto.getBrand());
-		tfName.setText(dto.getName	());
-		tfPrice.setText(Integer.toString(dto.getPrice()));
-		tfCount.setText(Integer.toString(dto.getCount()));
-		tfColor.setText(dto.getColor());
-		
-		
-	}
+//	private JComboBox getCbSIze() {
+//		if (cbSIze == null) {		
+//			cbSIze = new JComboBox();
+//			cbSIze.setBounds(659, 229, 91, 23);
+//		}
+//		return cbSIze;
+//	}
 
+	
+//	private JComboBox getCbColor() {
+//		if (cbColor == null) {
+//			cbColor = new JComboBox();
+//			cbColor.setBounds(810, 230, 96, 23);
+//		}
+//		return cbColor;
+//	}
+	
+
+//	--- Function ---
+	
+//	 SearchPage 정보를 받아서 출력
+	public void selectByinfo(List<String> list) {	
+		
+		tfBrand.setText(list.get(0));
+		tfName.setText(list.get(1));
+		tfPrice.setText(list.get(2));
+		
+//		 Image 처리 : filename 이 틀려야 보여주기가 가능
+		String fileImage = Integer.toString(ShareVar.filename);
+		if(!fileImage.equals("0")) {
+			lblImage.setText("");
+			lblImage.setIcon(new ImageIcon(fileImage));
+			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		
+		cbColorAction(list);
+		if(cbColor != null) {
+			cbColor.setVisible(true);			
+		}
+		
+		cbSizeAction(list);
+		if(cbSize != null) {
+			cbSize.setVisible(true);			
+		}
+		
+	}
+	
+//	private void cbSizeAction() {
+//		
+//	}
+	
+	private void cbColorAction(List<String> list) {
+		
+		String cbBrand =  list.get(0);
+		String cbName =  list.get(1);
+		
+		
+		ProductDAO dao = new ProductDAO();
+		ArrayList<ProductDTO> dtoList = dao.comboColorAction(cbBrand, cbName);
+		
+//		System.out.println("dddd : "+dtoList.size());
+		
+		int listCount = dtoList.size();
+		
+		String[] qTxt = new String[listCount];
+		for(int i = 0; i<listCount; i++) {
+			
+			qTxt[i] = dtoList.get(i).getColor();
+//			System.out.println(qTxt[i]);	
+		}
+		
+		container = this.getContentPane();
+		container.setLayout(null);
+		cbColor = null;
+		if(cbColor ==null) {
+			cbColor = new JComboBox<Object>(qTxt);
+			cbColor.setBounds(816, 229, 75, 23);
+		}
+//		System.out.println("cbColor : " + cbColor.toString());
+		container.add(cbColor);
+		
+	}
+	
+	private void cbSizeAction(List<String> list) {
+		
+		String cbBrand =  list.get(0);
+		String cbName =  list.get(1);
+		
+		
+		ProductDAO dao = new ProductDAO();
+		ArrayList<ProductDTO> dtoList = dao.comboSizeAction(cbBrand, cbName);
+		
+//		System.out.println("dddd : "+dtoList.size());
+		
+		int listCount = dtoList.size();
+		
+		Integer[] qTxt = new Integer[listCount];
+		for(int i = 0; i<listCount; i++) {
+			
+			qTxt[i] = dtoList.get(i).getSize();
+//			System.out.println(qTxt[i]);	
+		}
+		
+		container = this.getContentPane();
+		container.setLayout(null);
+		cbSize = null;
+		if(cbSize ==null) {
+			cbSize = new JComboBox<Object>(qTxt);
+			cbSize.setBounds(659, 230, 106, 23);
+		}
+//		System.out.println("cbColor : " + cbColor.toString());
+		container.add(cbSize);
+		
+	}
 }
