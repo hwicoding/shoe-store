@@ -81,6 +81,43 @@ public class ProductDAO {
 		}
 		return dtoList;
 	}
+	
+//	comboBox에서 선택 후 검색버튼 눌렀을 경우
+	public ArrayList<ProductDTO> conditionQueryAction(String conditionQueryName, String tfSelect) {
+		ArrayList<ProductDTO> dtoList = new ArrayList<ProductDTO>();
+		String select = "select obrand, oname, (select oprice from orderProd group by oprice) ";
+		String from = "from orderprod ";
+		String where = "where " + conditionQueryName +" like '%" + tfSelect + "%' group by obrand, oname order by obrand";
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, ps_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			
+			ResultSet rs = stmt_mysql.executeQuery(select + from + where);
+			while(rs.next()) {
+				
+				String wkBrand = rs.getString(1);
+				String wkName = rs.getString(2);
+				int wkPrice = rs.getInt(3);
+
+				ProductDTO dto = new ProductDTO(wkBrand, wkName, wkPrice);
+				dtoList.add(dto);
+				
+//				System.out.println(dtoList);
+				
+			}
+			conn_mysql.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dtoList;
+		
+	}
+	
+	
+	
 
 //	Table 에서 Row 를 click 했을 경우
 	public ProductDTO tableClick() {

@@ -27,6 +27,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SearchPage extends JDialog {
 
@@ -132,6 +134,13 @@ public class SearchPage extends JDialog {
 	private JButton getBtnQuery() {
 		if (btnQuery == null) {
 			btnQuery = new JButton("검색");
+			btnQuery.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					conditionQuery();
+					
+				}
+			});
 			btnQuery.setBounds(531, 166, 95, 23);
 		}
 		return btnQuery;
@@ -261,6 +270,41 @@ public class SearchPage extends JDialog {
 		buyPage.selectByinfo(array);
 		
 		return array;
+		
+	}
+	
+	private void conditionQuery() {
+		
+		int i = cbSelection.getSelectedIndex();
+		String conditionQueryName = "";
+		String tfSelect = tfSelection.getText();
+		
+		switch(i) {
+		case 0 :
+			conditionQueryName = "obrand";
+			break;
+		case 1 :
+			conditionQueryName = "oname";
+			break;
+		case 2 :
+			conditionQueryName = "oprice";
+			break;
+		default :
+			break;
+		}
+		
+		ProductDAO dao = new ProductDAO();
+		tableInit();
+		ArrayList<ProductDTO> dtoList =  dao.conditionQueryAction(conditionQueryName, tfSelect);
+		int listCount = dtoList.size();
+		
+		for(int j = 0; j < listCount; j++) {
+
+			String[] qTxt = {dtoList.get(j).getBrand(),
+									 dtoList.get(j).getName(),
+									 Integer.toString(dtoList.get(j).getPrice())};
+			outerTable.addRow(qTxt);
+		}
 		
 	}
 
