@@ -18,7 +18,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.TableView.TableRow;
 
+import com.javalec.adminStock.AdminStockDao;
+import com.javalec.adminStock.AdminStockDto;
 import com.javalec.base.Main;
+import com.javalec.customer.CustomerMain;
 import com.javalec.sale.SalePage;
 import com.javalec.util.ShareVar;
 
@@ -275,6 +278,12 @@ public class AdminOrderPage extends JDialog {
 	private JButton getBtnSearch() {
 		if (btnSearch == null) {
 			btnSearch = new JButton("검색하기");
+			btnSearch.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					tableInit();
+					searchBtnClicked();
+				}
+			});
 			btnSearch.setBounds(303, 48, 117, 29);
 		}
 		return btnSearch;
@@ -447,7 +456,7 @@ public class AdminOrderPage extends JDialog {
 
 	//로그아웃 메소드
 	private void logout() {
-		Main main = new Main();
+		CustomerMain main = new CustomerMain();
 		main.main(null);
 		this.dispose();
 	}
@@ -687,11 +696,15 @@ public class AdminOrderPage extends JDialog {
 		int cnt = Integer.parseInt(tfCnt.getText().trim());
 		String color = tfColor.getText().trim();
 		int price = Integer.parseInt(tfPrice.getText().trim());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date now = new Date();
+		String nowDate = sdf.format(now);
 		
 		
-		AdminOrderDao dao = new AdminOrderDao(brand, name, price, cnt, size, color);
+		AdminOrderDao dao = new AdminOrderDao(brand, name, price, cnt, size, color, nowDate);
 		if(dao.insertAction() == true) {
-			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개 등록되었습니다.");
+			JOptionPane.showMessageDialog(null, "등록되었습니다.");
+			//JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개 등록되었습니다.");
 		} else {
 			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
 		}
@@ -711,7 +724,7 @@ public class AdminOrderPage extends JDialog {
 
 		AdminOrderDao dao = new AdminOrderDao(seqno, brand, name, price, size, cnt, color);
 		if(dao.updateAction() == true) {
-			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개로 수정되었습니다.");
+			JOptionPane.showMessageDialog(null, "수정되었습니다.");
 		} else {
 			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
 		}
@@ -726,6 +739,70 @@ public class AdminOrderPage extends JDialog {
 		} else {
 			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
 		}
+	}
+	
+	private void searchBtnClicked() {
+		AdminOrderDao dao = null;
+		String inputStr = tfSelect.getText();
+		ArrayList<AdminOrderDto> list = new ArrayList<>();
+		int index = cbSelect.getSelectedIndex();
+		
+		switch(index) {
+		case 0:
+			dao = new AdminOrderDao();
+			list = dao.searchConditionToBrand(inputStr);
+
+			for (int i = 0; i < list.size(); i++) {
+				String tmSeq = Integer.toString(list.get(i).getOseq());
+				String tmCnt = Integer.toString(list.get(i).getOcnt());
+				String tmSize = Integer.toString(list.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = list.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
+				String[] qTxt = {tmSeq, list.get(i).getObrand(), list.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, list.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
+		case 1:
+			dao = new AdminOrderDao();
+			list = dao.searchConditionToName(inputStr);
+
+			for (int i = 0; i < list.size(); i++) {
+				String tmSeq = Integer.toString(list.get(i).getOseq());
+				String tmCnt = Integer.toString(list.get(i).getOcnt());
+				String tmSize = Integer.toString(list.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = list.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
+
+				String[] qTxt = {tmSeq, list.get(i).getObrand(), list.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, list.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
+		case 2:
+			dao = new AdminOrderDao();
+			list = dao.searchConditionToColor(inputStr);
+
+			for (int i = 0; i < list.size(); i++) {
+				String tmSeq = Integer.toString(list.get(i).getOseq());
+				String tmCnt = Integer.toString(list.get(i).getOcnt());
+				String tmSize = Integer.toString(list.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = list.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
+
+				String[] qTxt = {tmSeq, list.get(i).getObrand(), list.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, list.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
+		}
+		
 	}
 
 }

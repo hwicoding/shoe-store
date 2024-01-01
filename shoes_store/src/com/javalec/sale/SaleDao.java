@@ -49,7 +49,7 @@ public class SaleDao {
 	public ArrayList<SaleDto> searchAction() {
 		ArrayList<SaleDto> dtoList = new ArrayList<SaleDto>();
 		
-		String query ="select pur.pdate, (select sum(pcnt) from purchase pp where pur.pdate = pp.pdate group by pdate) ,sum(pur.pcnt * o.oprice) from purchase pur inner join product prod on prod.pseq = pur.pseq inner join orderProd o on o.oseq = prod.oseq where pur.pseq = prod.pseq and o.oseq = prod.oseq group by pur.pdate";
+		String query ="select DATE(pdate) as date, sum(pcnt) ,sum(pcnt * oprice) from orderProd o, purchase pur, product prod where pur.pseq = prod.pseq and prod.oseq = o.oseq group by date order by date desc";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -60,8 +60,8 @@ public class SaleDao {
 			
 			while(rs.next()) {
 				String date = rs.getString(1);
-				int wkTotalSale = rs.getInt(3);
 				int wkToalCnt = rs.getInt(2);
+				int wkTotalSale = rs.getInt(3);
 				
 				SaleDto dto = new SaleDto(date, wkTotalSale,  wkToalCnt);
 				dtoList.add(dto);
@@ -78,7 +78,7 @@ public class SaleDao {
 	public SaleDto cellClicked() {
 		SaleDto dto = null; 
 		
-		String query = "select pur.pdate ,sum(pur.pcnt * o.oprice) , sum(pur.pcnt)  from purchase pur inner join product prod on prod.pseq = pur.pseq inner join orderProd o on o.oseq = prod.oseq where pur.pseq = prod.pseq and o.oseq = prod.oseq and pur.pdate = '"+pdate+"'";
+		String query = "select DATE(pdate) as date, sum(pcnt) ,sum(pcnt * oprice) from orderProd o, purchase pur, product prod where pur.pseq = prod.pseq and prod.oseq = o.oseq and  date(pdate) ='"+pdate+"' group by date";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -89,10 +89,10 @@ public class SaleDao {
 			
 			if(rs.next()) {
 				String date = rs.getString(1);
-				int wkTotalSale = rs.getInt(2);
-				int wkTotalCnt = rs.getInt(3);
+				int wkTotalCnt = rs.getInt(2);
+				int wkTotalSale = rs.getInt(3);
 				
-				dto = new SaleDto(date, wkTotalSale, wkTotalCnt);
+				dto = new SaleDto(date, wkTotalCnt, wkTotalSale);
 			}
 			conn.close();
 		} catch (SQLException se) {
@@ -136,7 +136,7 @@ public class SaleDao {
 	public ArrayList<SaleDto>  selectSaleByBrand() {
 		ArrayList<SaleDto> dtoList = new ArrayList<SaleDto>();
 		
-		String query = "select pcnt, o.obrand , (pcnt*o.oprice) from purchase pur, product prod, orderProd o where o.oseq = prod.oseq and prod.pseq = pur.pseq and o.obrand like '%"+brand+"%' and pur.pdate ='"+pdate+"'";
+		String query = "select sum(pcnt), sum(pcnt*o.oprice) from purchase pur, product prod, orderProd o where o.oseq = prod.oseq and prod.pseq = pur.pseq and o.obrand like '%"+brand+"%' and date(pur.pdate) ='"+pdate+"' group by date(pdate)";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -147,10 +147,9 @@ public class SaleDao {
 			
 			while(rs.next()) {
 				int	wkTotalCnt  = rs.getInt(1);
-				String  wkBrand = rs.getString(2);
-				int wkTotalSale = rs.getInt(3);
+				int wkTotalSale = rs.getInt(2);
 				
-				SaleDto dto = new SaleDto(wkTotalCnt, wkBrand ,wkTotalSale);
+				SaleDto dto = new SaleDto(wkTotalCnt, wkTotalSale);
 				dtoList.add(dto);
 			}
 		} catch (Exception e) {
@@ -162,7 +161,7 @@ public class SaleDao {
 	public ArrayList<SaleDto> btnSearchClicked(String date) {
 		ArrayList<SaleDto> dtoList = new ArrayList<SaleDto>();
 		
-		String query = "select pur.pdate, (select sum(pcnt) from purchase pp where pur.pdate = pp.pdate group by pdate) ,sum(pur.pcnt * o.oprice) from purchase pur inner join product prod on prod.pseq = pur.pseq inner join orderProd o on o.oseq = prod.oseq where pur.pseq = prod.pseq and o.oseq = prod.oseq and pdate  like '%"+date+"%' group by pur.pdate";
+		String query = "select DATE(pdate) as date, sum(pcnt) ,sum(pcnt * oprice) from orderProd o, purchase pur, product prod where pur.pseq = prod.pseq and prod.oseq = o.oseq and  date(pdate) ='"+date+"' group by date";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -184,79 +183,5 @@ public class SaleDao {
 		}
 		return dtoList;
 	}
-	
-	//입력했을 때 
-//	public boolean insertAction() {
-//		PreparedStatement ps = null;
-//		
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			Connection conn = DriverManager.getConnection(url, id, pw);
-//			
-//			String query1 = "insert into product (obrand, oname, psize, ocnt, pcolor, pprice, pfile) ";
-//			String query2 = " values(?,?,?,?,?,?,?)";
-//			
-//			ps = conn.prepareStatement(query1 + query2);
-//			
-//			ps.setString(1, obrand);
-//			ps.setString(2, oname);
-//			ps.setInt(3, psize);
-//			ps.setInt(4, ocnt);
-//			ps.setString(5, pcolor);
-//			ps.setInt(6, pprice);
-//			ps.setBinaryStream(7, pfile);
-//			
-//			ps.executeUpdate();
-//			
-//			conn.close();
-//			
-//		} catch (SQLException se) {
-//			se.printStackTrace();
-//			return false;
-//		} catch (NumberFormatException nfe) {
-//			nfe.printStackTrace();
-//			return false;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return true; 
-//	}
-	
-	//수정했을 때 
-//	public boolean updateAction() {
-//		PreparedStatement ps = null;
-//		
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			Connection conn = DriverManager.getConnection(url, id, pw);
-//			
-//			String query1 = "updaet product set obrand=?, oname=?, psize=?, ocnt=?, pcolor=?, pprice=?, pfile=?) ";
-//			String query2 = "where pseq = "+pseq;
-//			
-//			ps = conn.prepareStatement(query1 + query2);
-//			
-//			ps.setString(1, obrand);
-//			ps.setString(2, oname);
-//			ps.setInt(3, psize);
-//			ps.setInt(4, ocnt);
-//			ps.setString(5, pcolor);
-//			ps.setInt(6, pprice);
-//			ps.setBinaryStream(7, pfile);
-//			
-//			ps.executeUpdate();
-//			
-//			conn.close();
-//			
-//		} catch (SQLException se) {
-//			se.printStackTrace();
-//			return false;
-//		} catch (NumberFormatException nfe) {
-//			nfe.printStackTrace();
-//			return false;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return true; 
-//	}
 	
 }

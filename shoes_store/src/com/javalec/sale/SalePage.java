@@ -21,7 +21,9 @@ import javax.swing.text.TableView.TableRow;
 import com.javalec.adminOrder.AdminOrderDao;
 import com.javalec.adminOrder.AdminOrderDto;
 import com.javalec.adminOrder.AdminOrderPage;
+import com.javalec.adminStock.AdminStockPage;
 import com.javalec.base.Main;
+import com.javalec.customer.CustomerMain;
 import com.javalec.util.ShareVar;
 
 import javax.swing.JButton;
@@ -81,7 +83,8 @@ public class SalePage extends JDialog {
 	private JTextField tfPurchaseCnt;
 	private JLabel lblNewLabel_1_2_1_1_2_1_1_3;
 	private JTextField tfTotalCnt;
-	private JButton btnNewButton;
+	private JButton btnProdRegister;
+	private JButton btnStock;
 
 	/**
 	 * Launch the application.
@@ -114,7 +117,7 @@ public class SalePage extends JDialog {
 			}
 		});
 		setTitle("매출현황");
-		setBounds(100, 100, 448, 700);
+		setBounds(100, 100, 448, 560);
 		setJMenuBar(getMenuBar());
 		getContentPane().setLayout(null);
 		getContentPane().add(getTfSelectDate());
@@ -134,7 +137,6 @@ public class SalePage extends JDialog {
 		getContentPane().add(getTfPurchaseCnt());
 		getContentPane().add(getLblNewLabel_1_2_1_1_2_1_1_3());
 		getContentPane().add(getTfTotalCnt());
-		getContentPane().add(getBtnNewButton());
 
 	}
 
@@ -144,6 +146,8 @@ public class SalePage extends JDialog {
 			menuBar.add(getMnBack());
 			menuBar.add(getLblNewLabel());
 			menuBar.add(getBtnLogOut());
+			menuBar.add(getBtnProdRegister());
+			menuBar.add(getBtnStock());
 		}
 		return menuBar;
 	}
@@ -189,7 +193,7 @@ public class SalePage extends JDialog {
 	private JTextField getTfSelectDate() {
 		if (tfSelectDate == null) {
 			tfSelectDate = new JTextField();
-			tfSelectDate.setBounds(111, 48, 194, 26);
+			tfSelectDate.setBounds(90, 25, 194, 26);
 			tfSelectDate.setColumns(10);
 		}
 		return tfSelectDate;
@@ -205,7 +209,7 @@ public class SalePage extends JDialog {
 					btnSearchClicked();
 				}
 			});
-			btnSearch.setBounds(303, 48, 117, 29);
+			btnSearch.setBounds(303, 25, 117, 29);
 		}
 		return btnSearch;
 	}
@@ -213,7 +217,7 @@ public class SalePage extends JDialog {
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
-			scrollPane.setBounds(18, 86, 399, 104);
+			scrollPane.setBounds(18, 60, 399, 104);
 			scrollPane.setViewportView(getInnerTable());
 		}
 		return scrollPane;
@@ -245,14 +249,14 @@ public class SalePage extends JDialog {
 	private JLabel getLblNewLabel_2() {
 		if (lblNewLabel_2 == null) {
 			lblNewLabel_2 = new JLabel("날짜입력 : ");
-			lblNewLabel_2.setBounds(28, 53, 61, 16);
+			lblNewLabel_2.setBounds(28, 30, 61, 16);
 		}
 		return lblNewLabel_2;
 	}
 	private JLabel getLblNewLabel_1_2_1_1_2_1() {
 		if (lblNewLabel_1_2_1_1_2_1 == null) {
 			lblNewLabel_1_2_1_1_2_1 = new JLabel("날짜 : ");
-			lblNewLabel_1_2_1_1_2_1.setBounds(33, 226, 61, 16);
+			lblNewLabel_1_2_1_1_2_1.setBounds(33, 180, 61, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1;
 	}
@@ -261,14 +265,14 @@ public class SalePage extends JDialog {
 			tfDate = new JTextField();
 			tfDate.setEditable(false);
 			tfDate.setColumns(10);
-			tfDate.setBounds(95, 221, 100, 26);
+			tfDate.setBounds(110, 175, 100, 26);
 		}
 		return tfDate;
 	}
 	private JLabel getLblNewLabel_1_2_1_1_2_1_1() {
 		if (lblNewLabel_1_2_1_1_2_1_1 == null) {
 			lblNewLabel_1_2_1_1_2_1_1 = new JLabel("총 매출액 : ");
-			lblNewLabel_1_2_1_1_2_1_1.setBounds(33, 274, 61, 16);
+			lblNewLabel_1_2_1_1_2_1_1.setBounds(33, 220, 61, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1_1;
 	}
@@ -278,14 +282,14 @@ public class SalePage extends JDialog {
 			tfTotalAmount.setEditable(false);
 			tfTotalAmount.setHorizontalAlignment(SwingConstants.TRAILING);
 			tfTotalAmount.setColumns(10);
-			tfTotalAmount.setBounds(95, 269, 100, 26);
+			tfTotalAmount.setBounds(110, 215, 100, 26);
 		}
 		return tfTotalAmount;
 	}
 	private JLabel getLblNewLabel_1_2_1_1_2_1_1_1() {
 		if (lblNewLabel_1_2_1_1_2_1_1_1 == null) {
 			lblNewLabel_1_2_1_1_2_1_1_1 = new JLabel("[브랜드 별 일 매출액]");
-			lblNewLabel_1_2_1_1_2_1_1_1.setBounds(33, 382, 200, 16);
+			lblNewLabel_1_2_1_1_2_1_1_1.setBounds(33, 340, 200, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1_1_1;
 	}
@@ -301,7 +305,7 @@ public class SalePage extends JDialog {
 			});
 			
 			cbBrand.setSelectedIndex(0);
-			cbBrand.setBounds(37, 424, 120, 27);
+			cbBrand.setBounds(37, 380, 120, 27);
 		}
 		return cbBrand;
 	}
@@ -309,7 +313,7 @@ public class SalePage extends JDialog {
 	private JLabel getLblNewLabel_1_2_1_1_2_1_1_2() {
 		if (lblNewLabel_1_2_1_1_2_1_1_2 == null) {
 			lblNewLabel_1_2_1_1_2_1_1_2 = new JLabel("브랜드 별 매출액 : ");
-			lblNewLabel_1_2_1_1_2_1_1_2.setBounds(49, 476, 100, 16);
+			lblNewLabel_1_2_1_1_2_1_1_2.setBounds(49, 430, 100, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1_1_2;
 	}
@@ -319,7 +323,7 @@ public class SalePage extends JDialog {
 			tfBrandForAmount.setEditable(false);
 			tfBrandForAmount.setHorizontalAlignment(SwingConstants.TRAILING);
 			tfBrandForAmount.setColumns(10);
-			tfBrandForAmount.setBounds(140, 471, 180, 26);
+			tfBrandForAmount.setBounds(155, 425, 180, 26);
 		}
 		return tfBrandForAmount;
 	}
@@ -327,7 +331,7 @@ public class SalePage extends JDialog {
 	private JLabel getLblNewLabel_1_2_1_1_2_1_1_2_1() {
 		if (lblNewLabel_1_2_1_1_2_1_1_2_1 == null) {
 			lblNewLabel_1_2_1_1_2_1_1_2_1 = new JLabel("브랜드 별 판매수량 : ");
-			lblNewLabel_1_2_1_1_2_1_1_2_1.setBounds(40, 530, 120, 16);
+			lblNewLabel_1_2_1_1_2_1_1_2_1.setBounds(49, 460, 120, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1_1_2_1;
 	}
@@ -337,7 +341,7 @@ public class SalePage extends JDialog {
 			tfPurchaseCnt.setEditable(false);
 			tfPurchaseCnt.setHorizontalAlignment(SwingConstants.TRAILING);
 			tfPurchaseCnt.setColumns(10);
-			tfPurchaseCnt.setBounds(140, 525, 180, 26);
+			tfPurchaseCnt.setBounds(155, 455, 180, 26);
 		}
 		return tfPurchaseCnt;
 	}
@@ -345,7 +349,7 @@ public class SalePage extends JDialog {
 	private JLabel getLblNewLabel_1_2_1_1_2_1_1_3() {
 		if (lblNewLabel_1_2_1_1_2_1_1_3 == null) {
 			lblNewLabel_1_2_1_1_2_1_1_3 = new JLabel("총 판매수량 : ");
-			lblNewLabel_1_2_1_1_2_1_1_3.setBounds(33, 324, 80, 16);
+			lblNewLabel_1_2_1_1_2_1_1_3.setBounds(33, 260, 80, 16);
 		}
 		return lblNewLabel_1_2_1_1_2_1_1_3;
 	}
@@ -356,29 +360,41 @@ public class SalePage extends JDialog {
 			tfTotalCnt.setEditable(false);
 			tfTotalCnt.setHorizontalAlignment(SwingConstants.TRAILING);
 			tfTotalCnt.setColumns(10);
-			tfTotalCnt.setBounds(95, 319, 100, 26);
+			tfTotalCnt.setBounds(110, 255, 100, 26);
 		}
 		return tfTotalCnt;
 	}
 	
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("제품등록");
-			btnNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					changeWindow();
+	private JButton getBtnProdRegister() {
+		if (btnProdRegister == null) {
+			btnProdRegister = new JButton("제품등록");
+			btnProdRegister.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					goToAdminOrderPage();
 				}
 			});
-			btnNewButton.setBounds(18, 12, 117, 29);
 		}
-		return btnNewButton;
+		return btnProdRegister;
+	}
+	private JButton getBtnStock() {
+		if (btnStock == null) {
+			btnStock = new JButton("재고현황");
+			btnStock.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					goToAdminStockPage();
+				}
+			});
+		}
+		return btnStock;
 	}
 	
 	// ---------------function ------------------------
 
 	//로그아웃 메소드
 	private void logout() {
-		Main main = new Main();
+		CustomerMain main = new CustomerMain();
 		main.main(null);
 		this.dispose();
 	}
@@ -410,6 +426,7 @@ public class SalePage extends JDialog {
 	private void clearColumn() {
 		tfDate.setText("");
 		tfTotalAmount.setText("");
+		tfTotalCnt.setText("");
 		tfBrandForAmount.setText("");
 		tfPurchaseCnt.setText("");
 	}
@@ -460,17 +477,17 @@ public class SalePage extends JDialog {
 		try {
 			strToDate = dateFormat.parse(getDate);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//가격 포맷 ###,### 설정
 		DecimalFormat decFormat = new DecimalFormat("###,###");
 		int tmp3 = dto.getTotalSales();
 		String tmTSale = decFormat.format(tmp3);
+		tfBrandForAmount.setText(tmTSale);
 		
-		tfDate.setText(dateFormat.format(strToDate));
+		
 		tfTotalAmount.setText(tmTSale);
+		tfDate.setText(dateFormat.format(strToDate));
 		tfTotalCnt.setText(Integer.toString(dto.getTotalCnt()));
 		
 		selectSaleByBrand();
@@ -511,7 +528,6 @@ public class SalePage extends JDialog {
 			tfBrandForAmount.setText(tmTSale);
 			tfPurchaseCnt.setText(Integer.toString(dtoList.get(i).getTotalCnt()));
 		}
-		
 	}
 
 	//검색하기 버튼 클릭 했을 때 
@@ -533,10 +549,16 @@ public class SalePage extends JDialog {
 		}
 	}
 	
-	
-	private void changeWindow() {
+	private void goToAdminOrderPage() {
 		this.dispose();
-		AdminOrderPage page = new AdminOrderPage();
-		page.setVisible(true);
+		AdminOrderPage adminOrderPage = new AdminOrderPage();
+		adminOrderPage.setVisible(true);
+		
+	}
+	
+	private void goToAdminStockPage() {
+		this.dispose();
+		AdminStockPage adminStockPage = new AdminStockPage();
+		adminStockPage.setVisible(true);
 	}
 }

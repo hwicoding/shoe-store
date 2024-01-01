@@ -22,11 +22,11 @@ public class SaleDto {
 		return pcnt;
 	}
 
-	public SaleDto(String pdate, int totalSales , int totalCnt) {
+	public SaleDto(String pdate, int totalCnt, int totalSales) {
 		super();
 		this.pdate = pdate;
-		this.totalSales = totalSales;
 		this.totalCnt = totalCnt;
+		this.totalSales = totalSales;
 	}
 	
 	public SaleDto(String brand) {
@@ -36,10 +36,9 @@ public class SaleDto {
 
 	
 	
-	public SaleDto(int totalCnt, String brand, int totalSales) {
+	public SaleDto(int totalCnt,  int totalSales) {
 		super();
 		this.totalCnt = totalCnt;
-		this.brand = brand;
 		this.totalSales = totalSales;
 		
 	}

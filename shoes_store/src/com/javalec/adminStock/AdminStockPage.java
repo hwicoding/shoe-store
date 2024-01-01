@@ -19,6 +19,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.text.TableView.TableRow;
 
 import com.javalec.base.Main;
+import com.javalec.customer.CustomerMain;
+import com.javalec.productShin.ProductDAO;
+import com.javalec.productShin.ProductDTO;
 import com.javalec.sale.SalePage;
 import com.javalec.util.ShareVar;
 
@@ -209,7 +212,7 @@ public class AdminStockPage extends JDialog {
 	private JComboBox getCbSelect() {
 		if (cbSelect == null) {
 			cbSelect = new JComboBox();
-			cbSelect.setModel(new DefaultComboBoxModel(new String[] { "브랜드", "제품명", "컬러" }));
+			cbSelect.setModel(new DefaultComboBoxModel(new String[] {"브랜드", "제품명", "색상"}));
 			cbSelect.setBounds(18, 51, 90, 23);
 		}
 		return cbSelect;
@@ -227,6 +230,14 @@ public class AdminStockPage extends JDialog {
 	private JButton getBtnSearch() {
 		if (btnSearch == null) {
 			btnSearch = new JButton("검색하기");
+			btnSearch.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tableInit();
+					searchBtnClicked();
+					tfSelect.setText("");
+				}
+			});
 			btnSearch.setBounds(303, 48, 117, 29);
 		}
 		return btnSearch;
@@ -399,7 +410,7 @@ public class AdminStockPage extends JDialog {
 
 	//로그아웃 메소드
 	private void logout() {
-		Main main = new Main();
+		CustomerMain main = new CustomerMain();
 		main.main(null);
 		this.dispose();
 	}
@@ -573,53 +584,118 @@ public class AdminStockPage extends JDialog {
 	}
 	
 
-	//입력 메소드 
-	private void insertAction() {
-		
-		String brand = tfBrand.getText().trim();
-		String name = tfName.getText().trim();
-		int size = Integer.parseInt(tfSize.getText().trim());
-		int cnt = Integer.parseInt(tfCnt.getText().trim());
-		String color = tfColor.getText().trim();
-		int price = Integer.parseInt(tfPrice.getText().trim());
-		
-		
-		AdminStockDao dao = new AdminStockDao(brand, name, price, cnt, size, color);
-		if(dao.insertAction() == true) {
-			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개 등록되었습니다.");
-		} else {
-			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
-		}
-	}
+//	//입력 메소드 
+//	private void insertAction() {
+//		
+//		String brand = tfBrand.getText().trim();
+//		String name = tfName.getText().trim();
+//		int size = Integer.parseInt(tfSize.getText().trim());
+//		int cnt = Integer.parseInt(tfCnt.getText().trim());
+//		String color = tfColor.getText().trim();
+//		int price = Integer.parseInt(tfPrice.getText().trim());
+//		
+//		
+//		AdminStockDao dao = new AdminStockDao(brand, name, price, cnt, size, color);
+//		if(dao.insertAction() == true) {
+//			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개 등록되었습니다.");
+//		} else {
+//			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
+//		}
+//	}
+//	
+//	
+//	//수정 메소드
+//	private void updateAction() {
+//		int seqno = Integer.parseInt(tfSeq.getText());
+//		
+//		String brand = tfBrand.getText().trim();
+//		String name = tfName.getText().trim();
+//		int size = Integer.parseInt(tfSize.getText().trim());
+//		int cnt = Integer.parseInt(tfCnt.getText().trim());
+//		String color = tfColor.getText().trim();
+//		int price = Integer.parseInt(tfPrice.getText().trim());
+//
+//		AdminStockDao dao = new AdminStockDao(seqno, brand, name, price, size, cnt, color);
+//		if(dao.updateAction() == true) {
+//			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개로 수정되었습니다.");
+//		} else {
+//			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
+//		}
+//	}
+//
+//	//삭제 메소드
+//	private void deleteAction() {
+//		int seqno = Integer.parseInt(tfSeq.getText());
+//		AdminStockDao dao = new AdminStockDao(seqno);
+//		if(dao.deleteAction() == true) {
+//			JOptionPane.showMessageDialog(null, "해당 제품이 삭제되었습니다.");
+//		} else {
+//			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
+//		}
+//	}
 	
-	
-	//수정 메소드
-	private void updateAction() {
-		int seqno = Integer.parseInt(tfSeq.getText());
+	//검색
+	private void searchBtnClicked() {
+		AdminStockDao dao = null;
+		String inputStr = tfSelect.getText();
+		ArrayList<AdminStockDto> dtoList = new ArrayList<>();
+		int index = cbSelect.getSelectedIndex();
 		
-		String brand = tfBrand.getText().trim();
-		String name = tfName.getText().trim();
-		int size = Integer.parseInt(tfSize.getText().trim());
-		int cnt = Integer.parseInt(tfCnt.getText().trim());
-		String color = tfColor.getText().trim();
-		int price = Integer.parseInt(tfPrice.getText().trim());
+		switch(index) {
+		case 0:
+			dao = new AdminStockDao();
+			dtoList = dao.searchConditionToBrand(inputStr);
 
-		AdminStockDao dao = new AdminStockDao(seqno, brand, name, price, size, cnt, color);
-		if(dao.updateAction() == true) {
-			JOptionPane.showMessageDialog(null, "["+tfBrand+"] "+tfName.getText()+" 제품" + tfCnt.getText() +"개로 수정되었습니다.");
-		} else {
-			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
-		}
-	}
+			for (int i = 0; i < dtoList.size(); i++) {
+				String tmSeq = Integer.toString(dtoList.get(i).getOseq());
+				String tmCnt = Integer.toString(dtoList.get(i).getOcnt());
+				String tmSize = Integer.toString(dtoList.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = dtoList.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
 
-	//삭제 메소드
-	private void deleteAction() {
-		int seqno = Integer.parseInt(tfSeq.getText());
-		AdminStockDao dao = new AdminStockDao(seqno);
-		if(dao.deleteAction() == true) {
-			JOptionPane.showMessageDialog(null, "해당 제품이 삭제되었습니다.");
-		} else {
-			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");
+				String[] qTxt = {tmSeq, dtoList.get(i).getObrand(), dtoList.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, dtoList.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
+		case 1:
+			dao = new AdminStockDao();
+			dtoList = dao.searchConditionToName(inputStr);
+
+			for (int i = 0; i < dtoList.size(); i++) {
+				String tmSeq = Integer.toString(dtoList.get(i).getOseq());
+				String tmCnt = Integer.toString(dtoList.get(i).getOcnt());
+				String tmSize = Integer.toString(dtoList.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = dtoList.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
+
+				String[] qTxt = {tmSeq, dtoList.get(i).getObrand(), dtoList.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, dtoList.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
+		case 2:
+			dao = new AdminStockDao();
+			dtoList = dao.searchConditionToColor(inputStr);
+
+			for (int i = 0; i < dtoList.size(); i++) {
+				String tmSeq = Integer.toString(dtoList.get(i).getOseq());
+				String tmCnt = Integer.toString(dtoList.get(i).getOcnt());
+				String tmSize = Integer.toString(dtoList.get(i).getOsize());
+				//가격 포맷 ###,### 설정
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = dtoList.get(i).getOprice();
+				String tmPrice = decFormat.format(tmp3);
+
+				String[] qTxt = {tmSeq, dtoList.get(i).getObrand(), dtoList.get(i).getOname(), tmPrice,
+								tmCnt, tmSize, dtoList.get(i).getOcolor()};
+				outerTable.addRow(qTxt);
+			}
+			break;
 		}
 	}
 
