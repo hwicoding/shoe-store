@@ -9,6 +9,8 @@ public class CartDto {
 	String brand, name, color;
 	int cartNum;
 	int cartCount;
+	int totalCnt;
+	int totalMoney;
     
 	
 	//	constructor
@@ -17,7 +19,18 @@ public class CartDto {
 		
 	}
 
-	public CartDto(int seqno, String name, String brand, int size, int price, int count) {
+	public CartDto(int cartNum, String brand, String name, String color,  int size, int price, int cartCount) {
+		super();
+		this.cartNum = cartNum;
+		this.brand = brand;
+		this.name = name;
+		this.color = color;
+		this.size = size;
+		this.price = price;
+		this.cartCount = cartCount;
+	}
+
+	public CartDto(int seqno, String name, String brand, int size,  int price,  int count) {
 		super();
 		this.seqno = seqno;
 		this.name = name;
@@ -26,7 +39,7 @@ public class CartDto {
 		this.price = price;
 		this.count = count;
 	}
-
+	
 	public CartDto(int seqno, int size, int count, int price, String brand, String name, String color) {
 		super();
 		this.seqno = seqno;
@@ -37,9 +50,26 @@ public class CartDto {
 		this.name = name;
 		this.color = color;
 	}
-
 	
-    //	Method
+	public CartDto(int cartNum, int cartCount, String brand, String name, int size, int price, String color) {
+		super();
+		this.cartNum = cartNum;
+		this.cartCount = cartCount;
+		this.brand = brand;
+		this.name = name;
+		this.size = size;
+		this.price = price;
+		this.color = color;
+	}
+	
+	
+    public CartDto(int totalCnt, int totalMoney) {
+		super();
+		this.totalCnt = totalCnt;
+		this.totalMoney = totalMoney;
+	}
+
+	//	Method
 	public int getSeqno() {
 		return seqno;
 	}
@@ -110,6 +140,22 @@ public class CartDto {
 
 	public void setCartCount(int cartCount) {
 		this.cartCount = cartCount;
+	}
+
+	public int getTotalCnt() {
+		return totalCnt;
+	}
+
+	public void setTotalCnt(int totalCnt) {
+		this.totalCnt = totalCnt;
+	}
+
+	public int getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalMoney(int totalMoney) {
+		this.totalMoney = totalMoney;
 	}
 	
 }
