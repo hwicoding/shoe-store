@@ -47,7 +47,6 @@ public class BuyPage extends JDialog {
 	private JLabel lblNewLabel_1_1_1_1_1;
 	private JButton btnNewButton;
 	private JButton btnBack;
-	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabel_1_1_1_1_2;
 	private JTextField tfCount;
 	private JComboBox cbSize;
@@ -75,9 +74,10 @@ public class BuyPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public BuyPage() {
-		getContentPane().setEnabled(false);
+		getContentPane().setBackground(new Color(29, 84, 141));
+		setBackground(new Color(64, 62, 255));
 		setTitle("구매 페이지");
-		setBounds(100, 100, 973, 489);
+		setBounds(100, 100, 770, 519);
 		getContentPane().setLayout(null);
 		getContentPane().add(getLblImage());
 		getContentPane().add(getLblNewLabel_1());
@@ -90,7 +90,6 @@ public class BuyPage extends JDialog {
 		getContentPane().add(getLblNewLabel_1_1_1_1_1());
 		getContentPane().add(getBtnNewButton());
 		getContentPane().add(getBtnBack());
-		getContentPane().add(getLblNewLabel_2());
 		getContentPane().add(getLblNewLabel_1_1_1_1_2());
 		getContentPane().add(getTfCount());
 
@@ -100,14 +99,14 @@ public class BuyPage extends JDialog {
 			lblImage = new JLabel("이미지");
 			lblImage.setBackground(new Color(255, 128, 64));
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-			lblImage.setBounds(42, 80, 535, 340);
+			lblImage.setBounds(42, 80, 400, 340);
 		}
 		return lblImage;
 	}
 	private JLabel getLblNewLabel_1() {
 		if (lblNewLabel_1 == null) {
 			lblNewLabel_1 = new JLabel("브랜드");
-			lblNewLabel_1.setBounds(602, 85, 61, 21);
+			lblNewLabel_1.setBounds(460, 85, 61, 21);
 		}
 		return lblNewLabel_1;
 	}
@@ -115,7 +114,7 @@ public class BuyPage extends JDialog {
 		if (tfBrand == null) {
 			tfBrand = new JTextField();
 			tfBrand.setEnabled(false);
-			tfBrand.setBounds(658, 85, 248, 21);
+			tfBrand.setBounds(510, 85, 220, 21);
 			tfBrand.setColumns(10);
 		}
 		return tfBrand;
@@ -123,7 +122,7 @@ public class BuyPage extends JDialog {
 	private JLabel getLblNewLabel_1_1() {
 		if (lblNewLabel_1_1 == null) {
 			lblNewLabel_1_1 = new JLabel("상품명");
-			lblNewLabel_1_1.setBounds(602, 130, 61, 21);
+			lblNewLabel_1_1.setBounds(460, 130, 61, 21);
 		}
 		return lblNewLabel_1_1;
 	}
@@ -132,14 +131,14 @@ public class BuyPage extends JDialog {
 			tfName = new JTextField();
 			tfName.setEnabled(false);
 			tfName.setColumns(10);
-			tfName.setBounds(658, 130, 248, 21);
+			tfName.setBounds(510, 130, 220, 21);
 		}
 		return tfName;
 	}
 	private JLabel getLblNewLabel_1_1_1() {
 		if (lblNewLabel_1_1_1 == null) {
 			lblNewLabel_1_1_1 = new JLabel("가격");
-			lblNewLabel_1_1_1.setBounds(602, 181, 61, 21);
+			lblNewLabel_1_1_1.setBounds(460, 181, 61, 21);
 		}
 		return lblNewLabel_1_1_1;
 	}
@@ -148,21 +147,21 @@ public class BuyPage extends JDialog {
 			tfPrice = new JTextField();
 			tfPrice.setEnabled(false);
 			tfPrice.setColumns(10);
-			tfPrice.setBounds(658, 181, 91, 21);
+			tfPrice.setBounds(510, 181, 91, 21);
 		}
 		return tfPrice;
 	}
 	private JLabel getLblNewLabel_1_1_1_1() {
 		if (lblNewLabel_1_1_1_1 == null) {
 			lblNewLabel_1_1_1_1 = new JLabel("사이즈");
-			lblNewLabel_1_1_1_1.setBounds(602, 230, 61, 21);
+			lblNewLabel_1_1_1_1.setBounds(460, 230, 61, 21);
 		}
 		return lblNewLabel_1_1_1_1;
 	}
 	private JLabel getLblNewLabel_1_1_1_1_1() {
 		if (lblNewLabel_1_1_1_1_1 == null) {
 			lblNewLabel_1_1_1_1_1 = new JLabel("수량");
-			lblNewLabel_1_1_1_1_1.setBounds(770, 231, 44, 21);
+			lblNewLabel_1_1_1_1_1.setBounds(460, 330, 44, 21);
 		}
 		return lblNewLabel_1_1_1_1_1;
 	}
@@ -174,7 +173,7 @@ public class BuyPage extends JDialog {
 					btnCartClicked();
 				}
 			});
-			btnNewButton.setBounds(775, 353, 95, 23);
+			btnNewButton.setBounds(640, 400, 95, 23);
 		}
 		return btnNewButton;
 	}
@@ -182,7 +181,6 @@ public class BuyPage extends JDialog {
 		if (btnBack == null) {
 			btnBack = new JButton("");
 			
-
 			ImageIcon icon = new ImageIcon(BuyPage.class.getResource("/com/javalec/images/backIcon.png"));
 			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 			ImageIcon changeIcon = new ImageIcon(changeToImg);
@@ -198,23 +196,10 @@ public class BuyPage extends JDialog {
 		}
 		return btnBack;
 	}
-	private JLabel getLblNewLabel_2() {
-		if (lblNewLabel_2 == null) {
-			lblNewLabel_2 = new JLabel("");
-			
-			ImageIcon icon = new ImageIcon(BuyPage.class.getResource("/com/javalec/images/shoeLogo.png"));
-			Image changeToImg = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			ImageIcon changeIcon = new ImageIcon(changeToImg);
-			lblNewLabel_2.setIcon(changeIcon);
-			lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel_2.setBounds(60, 8, 50, 50);
-		}
-		return lblNewLabel_2;
-	}
 	private JLabel getLblNewLabel_1_1_1_1_2() {
 		if (lblNewLabel_1_1_1_1_2 == null) {
 			lblNewLabel_1_1_1_1_2 = new JLabel("색상");
-			lblNewLabel_1_1_1_1_2.setBounds(602, 280, 61, 21);
+			lblNewLabel_1_1_1_1_2.setBounds(460, 280, 61, 21);
 		}
 		return lblNewLabel_1_1_1_1_2;
 	}
@@ -237,7 +222,7 @@ public class BuyPage extends JDialog {
 			
 			tfCount.setHorizontalAlignment(SwingConstants.TRAILING);
 			tfCount.setColumns(10);
-			tfCount.setBounds(815, 230, 91, 21);
+			tfCount.setBounds(510, 330, 91, 21);
 		}
 		return tfCount;
 	}
@@ -253,7 +238,15 @@ public class BuyPage extends JDialog {
 		
 		String filePath = Integer.toString(ShareVar.filename);
 		if(!filePath.equals("0")) {
+			
 			lblImage.setText("");
+			ImageIcon icon = new ImageIcon(filePath);
+			Image changeToImg = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+			ImageIcon changeIcon = new ImageIcon(changeToImg);
+			lblImage.setIcon(changeIcon);
+			
+			
+			
 			lblImage.setIcon(new ImageIcon(filePath));
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
 		}
@@ -280,7 +273,7 @@ public class BuyPage extends JDialog {
 		cbSize = null;
 		if(cbSize == null) {
 			cbSize = new JComboBox(qTxt);
-			cbSize.setBounds(658, 228, 100, 27);
+			cbSize.setBounds(510, 228, 100, 27);
 		}
 		
 		container.add(cbSize);
@@ -303,7 +296,7 @@ public class BuyPage extends JDialog {
 		cbColor = null;
 		if(cbColor == null) {
 			cbColor = new JComboBox(qTxt);
-			cbColor.setBounds(658, 278, 100, 27);
+			cbColor.setBounds(510, 278, 100, 27);
 		}
 		
 		container.add(cbColor);
@@ -367,8 +360,6 @@ public class BuyPage extends JDialog {
 	}
 	
 	//field 체크 메소드 
-	//****************************************** 수량 입력했을 때, orderProd의 수량보다 많이 입력햇을 때, 알림창 뜨도록 만들어야
-	// ... orderProd 제품명, 브랜드명, 마지막을 꺼내야함... 꺼내서 수량체 
 	private boolean checkField() {
 		JFrame jframe = new JFrame();
 		jframe.setAlwaysOnTop(true);
@@ -439,5 +430,5 @@ public class BuyPage extends JDialog {
 //	} else {
 //		System.out.println("실패....");
 //	}
-	
+
 }

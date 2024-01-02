@@ -292,11 +292,11 @@ public class ProductDAO {
 		PreparedStatement ps = null;
 
 		System.out.println("productDAO [insertProductQy(]) start ");
+		
+		//String query1 ="insert into product (oseq, pfile) values("+oseq+", select pfile from (select pfile from product where oseq = ( select oseq from orderProd where obrand='"+brand+"' and oname='"+name+"' and osize="+size+" limit 1) as f)";
 
-		String query = "insert into product ( pfile, oseq) values((select pfile from product p, orderProd o where o.obrand = '"
-				+ brand + "' and o.oname='" + name + "' and o.osize='" + size
-				+ "' and o.oseq = p.oseq group by pfile), " + oseq + ")";
-
+		String query = "insert into product (oseq, pfile) values("+oseq+", (select pfile from product p inner join orderProd o on p.oseq = o.oseq and o.oseq = (select oseq from orderProd where obrand='"+brand+"' and oname='"+name+"' and osize="+size+" limit 1)))";
+		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url_mysql, id_mysql, ps_mysql);
@@ -337,5 +337,59 @@ public class ProductDAO {
 			e.printStackTrace();
 		}
 		return currentStock;
+	}
+	
+	//브랜드로 검색
+	public ArrayList<ProductDTO> searchConditionToBrand(String str) {
+		
+		ArrayList<ProductDTO> dtoList = new ArrayList<ProductDTO>();
+		String query = "select obrand, oname, oprice from orderProd where obrand like '%"+str+"%' group by obrand, oname, oprice";
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(url_mysql, id_mysql, ps_mysql);
+			Statement stmt = conn.createStatement();
+
+			ResultSet rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				String wkBrand = rs.getString(1);
+				String wkName = rs.getString(2);
+				int wkPrice = rs.getInt(3);
+				ProductDTO dto = new ProductDTO(wkBrand , wkName, wkPrice);
+				dtoList.add(dto);
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dtoList;
+	}
+	
+	//제품명을 검색
+	public ArrayList<ProductDTO> searchConditionToName(String name) {
+		
+		ArrayList<ProductDTO> list = new ArrayList<ProductDTO>();
+		String query = "select obrand, oname, oprice from orderProd where oname like '%"+name+"%' group by obrand, oname, oprice";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(url_mysql, id_mysql, ps_mysql);
+			Statement stmt = conn.createStatement();
+
+			ResultSet rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				String wkBrand = rs.getString(1);
+				String wkName = rs.getString(2);
+				int wkPrice = rs.getInt(3);
+				ProductDTO dto = new ProductDTO(wkBrand , wkName, wkPrice);
+				list.add(dto);
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

@@ -19,6 +19,8 @@ import com.javalec.adminOrder.AdminOrderDao;
 import com.javalec.adminOrder.AdminOrderDto;
 import com.javalec.base.Main;
 import com.javalec.cartShin.Cart;
+import com.javalec.customer.CustomerMain;
+import com.javalec.customer.Mypage;
 import com.javalec.purchaseShin.OrderPage;
 import com.javalec.util.ShareVar;
 
@@ -37,6 +39,8 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class SearchPage extends JDialog {
 
@@ -44,7 +48,6 @@ public class SearchPage extends JDialog {
 	private JLabel lblImage;
 	private JButton btnLogout;
 	private JButton btnUserInfo;
-	private JComboBox cbSelection;
 	private JTextField tfSelection;
 	private JButton btnQuery;
 	private JButton btnNewButton_3;
@@ -56,6 +59,7 @@ public class SearchPage extends JDialog {
 	private JButton btnPurchase;
 	private JScrollPane scrollPane;
 	private JTable innerTable;
+	private JComboBox cbSelect;
 
 	/**
 	 * Launch the application.
@@ -64,7 +68,6 @@ public class SearchPage extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ShareVar.userid = "aaa";
 					SearchPage dialog = new SearchPage();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
@@ -95,7 +98,6 @@ public class SearchPage extends JDialog {
 		getContentPane().add(getLblImage());
 		getContentPane().add(getBtnLogout());
 		getContentPane().add(getBtnUserInfo());
-		getContentPane().add(getCbSelection());
 		getContentPane().add(getTfSelection());
 		getContentPane().add(getBtnQuery());
 		getContentPane().add(getBtnNewButton_3());
@@ -103,6 +105,7 @@ public class SearchPage extends JDialog {
 		getContentPane().add(getBtnCart());
 		getContentPane().add(getBtnPurchase());
 		getContentPane().add(getScrollPane_1());
+		getContentPane().add(getCbSelect());
 
 	}
 	private JLabel getLblImage() {
@@ -142,6 +145,11 @@ public class SearchPage extends JDialog {
 	private JButton getBtnUserInfo() {
 		if (btnUserInfo == null) {
 			btnUserInfo = new JButton("");
+			btnUserInfo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					goToMyPage();
+				}
+			});
 			
 			ImageIcon icon = new ImageIcon(SearchPage.class.getResource("/com/javalec/images/profileIcon.png"));
 			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -152,15 +160,6 @@ public class SearchPage extends JDialog {
 			btnUserInfo.setBounds(670, 10, 40, 40);
 		}
 		return btnUserInfo;
-	}
-	private JComboBox getCbSelection() {
-		if (cbSelection == null) {
-			cbSelection = new JComboBox();
-			cbSelection.setEditable(true);
-			cbSelection.setModel(new DefaultComboBoxModel(new String[] {"브랜드", "제품명", "사이즈"}));
-			cbSelection.setBounds(32, 157, 95, 30);
-		}
-		return cbSelection;
 	}
 	private JTextField getTfSelection() {
 		if (tfSelection == null) {
@@ -173,6 +172,13 @@ public class SearchPage extends JDialog {
 	private JButton getBtnQuery() {
 		if (btnQuery == null) {
 			btnQuery = new JButton("");
+			btnQuery.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					tableInit();
+					searchCondition();
+				}
+			});
 			btnQuery.setBounds(338, 157, 30, 30);
 			
 			ImageIcon icon = new ImageIcon(OrderPage.class.getResource("/com/javalec/images/searchIcon.png"));
@@ -266,6 +272,20 @@ public class SearchPage extends JDialog {
 		}
 		
 		return innerTable;
+	}
+	
+	private JComboBox getCbSelect() {
+		if (cbSelect == null) {
+			cbSelect = new JComboBox();
+			cbSelect.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+					cbSelectInfo();
+				}
+			});
+			cbSelect.setModel(new DefaultComboBoxModel(new String[] {"브랜드", "제품명"}));
+			cbSelect.setBounds(32, 157, 95, 30);
+		}
+		return cbSelect;
 	}
 	
 //---	Function  ---
@@ -362,7 +382,7 @@ public class SearchPage extends JDialog {
 	
 	private void clickedLogoutBtn() {
 		dispose();
-		Main main = new Main();
+		CustomerMain main = new CustomerMain();
 		main.main(null);
 	}
 	
@@ -378,5 +398,58 @@ public class SearchPage extends JDialog {
 		OrderPage orderPage = new OrderPage();
 		orderPage.setVisible(true);
 	}
+	
+	//콤보박스 item check
+	private int cbSelectInfo() {
+		int i = cbSelect.getSelectedIndex();
+		return i;
+	}
+	
+	private void searchCondition() {
+		ProductDAO dao = null;
+		String str = tfSelection.getText();
+		switch(cbSelectInfo()) {
+		case 0:
+			dao = new ProductDAO();
+			ArrayList<ProductDTO> dtoList  = dao.searchConditionToBrand(str);
+
+			for(int i = 0; i < dtoList.size(); i++) {
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = dtoList.get(i).getPrice();
+				String tmPrice = decFormat.format(tmp3);
+				
+				String[] qTxt = {
+										 dtoList.get(i).getBrand(),
+										 dtoList.get(i).getName(),
+										 tmPrice};
+				tableInit();
+				outerTable.addRow(qTxt);
+			}
+			break;
+			
+		case 1:
+			dao = new ProductDAO();
+			ArrayList<ProductDTO> list  = dao.searchConditionToName(str);
+
+			for(int i = 0; i < list.size(); i++) {
+				DecimalFormat decFormat = new DecimalFormat("###,###");
+				int tmp3 = list.get(i).getPrice();
+				String tmPrice = decFormat.format(tmp3);
+				String[] qTxt = {list.get(i).getBrand(),list.get(i).getName(), tmPrice};
+				
+				outerTable.addRow(qTxt);
+			}
+			break;
+			
+		}
+	}
+	
+	private void goToMyPage() {
+		System.out.println("searchPage: "+ShareVar.userid);
+		this.dispose();
+		Mypage page = new Mypage();
+		page.setVisible(true);
+	}
+	
 	
 }

@@ -19,6 +19,8 @@ import javax.swing.table.TableColumn;
 import com.javalec.adminOrder.AdminOrderDao;
 import com.javalec.adminOrder.AdminOrderDto;
 import com.javalec.base.Main;
+import com.javalec.customer.CustomerMain;
+import com.javalec.customer.Mypage;
 import com.javalec.productShin.SearchPage;
 import com.javalec.productShin.ProductDAO;
 import com.javalec.productShin.ProductDTO;
@@ -94,7 +96,7 @@ public class OrderPage extends JDialog {
 				searchAction();
 			}
 		});
-		setTitle("주문내역");
+		setTitle("구매내역");
 		setBounds(100, 100, 770, 519);
 		getContentPane().setLayout(null);
 		getContentPane().add(getBtnHome());
@@ -247,6 +249,11 @@ public class OrderPage extends JDialog {
 	private JButton getBtnUserInfo() {
 		if (btnUserInfo == null) {
 			btnUserInfo = new JButton("");
+			btnUserInfo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					goToMyPage();
+				}
+			});
 			ImageIcon icon = new ImageIcon(OrderPage.class.getResource("/com/javalec/images/profileIcon.png"));
 			Image changeToImg = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 			ImageIcon changeIcon = new ImageIcon(changeToImg);
@@ -324,7 +331,7 @@ public class OrderPage extends JDialog {
 	// 로그아웃
 	private void btnLogoutClicked() {
 		this.dispose();
-		Main main = new Main();
+		CustomerMain main = new CustomerMain();
 		main.main(null);
 		
 		ShareVar.userid = "";
@@ -540,6 +547,11 @@ public class OrderPage extends JDialog {
 		} else {
 			JOptionPane.showMessageDialog(jframe, "주문취소할 상품을 선택하세요.");
 		}
-
+	}
+	
+	private void goToMyPage() {
+		this.dispose();
+		Mypage page = new Mypage();
+		page.setVisible(true);
 	}
 }
