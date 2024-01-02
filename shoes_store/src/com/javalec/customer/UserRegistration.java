@@ -10,6 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.JobAttributes;
+
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,6 +21,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 
 public class UserRegistration extends JDialog {
@@ -87,6 +92,7 @@ public class UserRegistration extends JDialog {
 	private JButton getBtnRegi() {
 		if (btnRegi == null) {
 			btnRegi = new JButton("회원가입 완료");
+			btnRegi.setEnabled(false);
 			btnRegi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					okaction();
@@ -193,6 +199,7 @@ public class UserRegistration extends JDialog {
 	private JButton getBtnConfirm() {
 		if (btnConfirm == null) {
 			btnConfirm = new JButton("비밀번호 체크");
+			btnConfirm.setEnabled(false);
 			btnConfirm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					pwcheck();
@@ -230,6 +237,7 @@ public class UserRegistration extends JDialog {
 	private JTextField getTfFilepath() {
 		if (tfFilepath == null) {
 			tfFilepath = new JTextField();
+			tfFilepath.setEditable(false);
 			tfFilepath.setBounds(465, 357, 235, 21);
 			tfFilepath.setColumns(10);
 		}
@@ -253,32 +261,60 @@ public class UserRegistration extends JDialog {
 		String login ="";
 		Dao dao = new Dao(id, pass);
 		boolean result = dao.check();
-		
+		if(id.contains("admin")) {
+			JOptionPane.showMessageDialog(null, "사용할 수 없는 아이디입니다");
+		}else {
 		if(result==false) {
 			JOptionPane.showMessageDialog(null, "중복입니다");
 		}else {
 			JOptionPane.showMessageDialog(null, "사용가능합니다");
+			tfID.setEditable(false);
 			pfPw.setEditable(true);
 			pfPw2.setEditable(true);
-		}	
+			btnConfirm.setEnabled(true);
 		}
+		}}	
+		
 	private void pwcheck() {
 		char[] pw = pfPw.getPassword();
 		String pass = new String(pw);
 		char[] pw1 = pfPw2.getPassword();
 		String pass2 = new String(pw1);
+		final String SAMEPT="(\\w)\\1\\1";
+		Pattern ThreeChar=null;
+		ThreeChar = Pattern.compile("(\\p{Alnum})\\1{2,}");
+		//Matcher matcher;
+		Matcher matcher1;
+		//matcher = Pattern.compile(SAMEPT).matcher(pass);
+		matcher1 = ThreeChar.matcher(pass);
+		//String listchar ="abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789|890";
+		//String[] arrlistchar = listchar.split("\\|");
+		//for(int i=0;i<arrlistchar.length;i++) {
+		//	if(pass.toLowerCase().matches(".*"+arrlistchar[i]+".*")) {
+		//		JOptionPane.showMessageDialog(null, "연속된 3자리 숫자나 문자 사용불가");
+		//	}
+		//}
 		
-		if(pass.length()==0||pass2.length()==0) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 입력하세요");
+		
+		if(pass.length()<4||pass2.length()>8) {
+			JOptionPane.showMessageDialog(null, "비밀번호를 4자리 이상 8자리 미만으로 입력하세요");
 		}
-		
+		else if(matcher1.find()) {
+			JOptionPane.showMessageDialog(null, "동일한 문자나 숫자를 3개이상 사용하실 수 없습니다.");
+		}
+		//else if(matcher.find()) {
+		//	JOptionPane.showMessageDialog(null, "동일한 문자를 3개이상 연속으로 사용할 수 없습니다.");
+		//}
 		else if(pass.equals(pass2)) {
 			JOptionPane.showMessageDialog(null, "비밀번호가 일치합니다");
 			tfName.setEditable(true);
 			tfPhone.setEditable(true);
+			btnRegi.setEnabled(true);
+			pfPw.setEditable(false);
+			pfPw2.setEditable(false);
 			
 		}else {
-			JOptionPane.showMessageDialog(null, "비밀번호가 틀립니다");
+			JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 		}
 	}
 	private void okaction() {
@@ -289,6 +325,30 @@ public class UserRegistration extends JDialog {
 		String pw1 =  new String(pass1);
 		String name= tfName.getText();
 		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
+		
+		
+		
+		
+		
+		if(name.length()!=0 && phone.length()!=0&&file1.length()!=0) {
+			okaction1();
+		
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "잘못된 부분이 있습니다.");}
+		
+	}
+	
+	private void okaction1() {
+		String id =tfID.getText();
+		char[] pass =pfPw.getPassword();
+		String pw=new String(pass);
+		char[] pass1=pfPw2.getPassword();
+		String pw1 =  new String(pass1);
+		String name= tfName.getText();
+		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
 		
 		FileInputStream input = null;
 		File file = new File(tfFilepath.getText());
@@ -298,16 +358,18 @@ public class UserRegistration extends JDialog {
 			e.printStackTrace();
 		}
 		
-		Dao dao = new Dao(id,pw,name,phone,input);
+		Dao dao = new Dao(id,pw,name,phone,input,file1);
 		boolean result = dao.insertAction();
 		
 		if(result==true) {
-			JOptionPane.showMessageDialog(null, tfName.getText()+"님의 회원가입이 완료되었습니다.");
+			JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
 			dispose();
-			
 		}else {
-			JOptionPane.showMessageDialog(null, "빈 칸이 없는지 확인하세요");
-		}}
+			JOptionPane.showMessageDialog(null, "잘못된 부분이 있습니다");
+		}
+		
+		
+	}
 		
 		private void filepath() {
 			JFileChooser chooser = new JFileChooser();
@@ -321,8 +383,14 @@ public class UserRegistration extends JDialog {
 			}
 			String FILEPATH = chooser.getSelectedFile().getPath();
 			tfFilepath.setText(FILEPATH);
-			lblImage.setIcon(new ImageIcon(FILEPATH));
+			ImageIcon icon =  new ImageIcon(FILEPATH);
+			Image i = icon.getImage();
+			Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+			ImageIcon icons =  new ImageIcon(s);
+			lblImage.setIcon(icons);
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+			getContentPane().add(lblImage);
+			setVisible(true);
 
 			
 		

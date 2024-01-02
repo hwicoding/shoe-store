@@ -86,9 +86,15 @@ public class customerCheck extends JDialog {
 		char[] pw = pfPW.getPassword();
 		String pass = new String(pw);
 		
-		if(pass.equals(ShareVar.password)) {
+		Dao dao = new Dao();
+		Dto dto = dao.pwch();
+		char[] pw1 = pfPW.getPassword();
+		String pass1 = new String(pw1);
+		
+		if(pass.equals(pass1)) {
 			JOptionPane.showMessageDialog(null, "확인되었습니다");
 			Mypage();
+			dispose();
 		}else {
 			JOptionPane.showMessageDialog(null, "비밀번호를 확인해 주십시오");
 		}

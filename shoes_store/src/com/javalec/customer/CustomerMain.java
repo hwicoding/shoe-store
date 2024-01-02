@@ -5,29 +5,36 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JTextField;
 
 import com.javalec.util.ShareVar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import javax.swing.JRadioButton;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class CustomerMain {
 
 	private JFrame frame;
 	private JLabel lblNewLabel;
 	private JLabel lblPw;
-	private JTextField tfId;
-	private JButton btnLogin;
-	private JButton btnRegis;
-	private JPasswordField pfPass;
-	private JRadioButton rdadmin;
+	private JTextField tfID;
+	private JButton btnNewButton;
+	private JButton btnNewButton_1;
+	private JPasswordField pfPW;
+	private JLabel lblimage;
 
 	/**
 	 * Launch the application.
@@ -57,22 +64,27 @@ public class CustomerMain {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		frame.setBounds(100, 100, 617, 413);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(getLblNewLabel());
+		frame.getContentPane().add(getLblPw());
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(getLblNewLabel());
 		frame.getContentPane().add(getLblPw());
-		frame.getContentPane().add(getTfId());
-		frame.getContentPane().add(getBtnLogin());
-		frame.getContentPane().add(getBtnRegis());
-		frame.getContentPane().add(getPfPass());
-		frame.getContentPane().add(getRdadmin());
+		frame.getContentPane().add(getTfID());
+		frame.getContentPane().add(getBtnNewButton());
+		frame.getContentPane().add(getBtnNewButton_1());
+		frame.getContentPane().add(getPfPW());
+		frame.getContentPane().add(getLblimage());
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
 			lblNewLabel = new JLabel("ID");
 			lblNewLabel.setFont(new Font("Gulim", Font.PLAIN, 20));
-			lblNewLabel.setBounds(110, 217, 50, 29);
+			lblNewLabel.setBounds(96, 235, 61, 22);
 		}
 		return lblNewLabel;
 	}
@@ -80,79 +92,83 @@ public class CustomerMain {
 		if (lblPw == null) {
 			lblPw = new JLabel("PW");
 			lblPw.setFont(new Font("Gulim", Font.PLAIN, 20));
-			lblPw.setBounds(110, 280, 50, 29);
+			lblPw.setBounds(96, 288, 61, 22);
 		}
 		return lblPw;
 	}
-	private JTextField getTfId() {
-		if (tfId == null) {
-			tfId = new JTextField();
-			tfId.setBounds(197, 217, 186, 29);
-			tfId.setColumns(10);
+	private JTextField getTfID() {
+		if (tfID == null) {
+			tfID = new JTextField();
+			tfID.setBounds(187, 235, 174, 22);
+			tfID.setColumns(10);
 		}
-		return tfId;
+		return tfID;
 	}
-	private JButton getBtnLogin() {
-		if (btnLogin == null) {
-			btnLogin = new JButton("로그인");
-			btnLogin.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("로그인");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
 					login();
 				}
 			});
-			btnLogin.setBounds(415, 222, 91, 23);
+			btnNewButton.setBounds(407, 235, 91, 23);
 		}
-		return btnLogin;
+		return btnNewButton;
 	}
-	private JButton getBtnRegis() {
-		if (btnRegis == null) {
-			btnRegis = new JButton("회원가입");
-			btnRegis.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
+	private JButton getBtnNewButton_1() {
+		if (btnNewButton_1 == null) {
+			btnNewButton_1 = new JButton("회원가입");
+			btnNewButton_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
 					userRegistration();
 				}
 			});
-			btnRegis.setBounds(415, 255, 91, 54);
+			btnNewButton_1.setBounds(407, 268, 91, 42);
 		}
-		return btnRegis;
+		return btnNewButton_1;
 	}
-	private JPasswordField getPfPass() {
-		if (pfPass == null) {
-			pfPass = new JPasswordField();
-			pfPass.setBounds(197, 280, 186, 29);
+	private JPasswordField getPfPW() {
+		if (pfPW == null) {
+			pfPW = new JPasswordField();
+			pfPW.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+						login();
+					}
+				}
+			});
+			pfPW.setBounds(187, 288, 174, 22);
 		}
-		return pfPass;
+		return pfPW;
 	}
 	
 	private void login() {
-		String id = tfId.getText();
-		String pass = new String(pfPass.getPassword());
+		String id = tfID.getText();
+		String pass = new String(pfPW.getPassword());
 		
-		if(tfId.getText().trim().length()==0) {
+		if(tfID.getText().trim().length()==0) {
 			JOptionPane.showMessageDialog(null, "아이디 입력필수");
-			tfId.requestFocus();
+			tfID.requestFocus();
 			return;
 		}else if(pass.trim().length()==0) {
 			JOptionPane.showMessageDialog(null, "패스워드 입력 필수");
-			pfPass.requestFocus();
+			pfPW.requestFocus();
 			
 		}else {
 			confirm();
 		}
 		
 	}
-	private void userRegistration() {
-		UserRegistration user = new UserRegistration();
-		user.setVisible(true);
-		
-		
-	}
-	
 	private void confirm() {
-		String inputID = tfId.getText();
-		char[] pw = pfPass.getPassword();
+		String inputID = tfID.getText();
+		char[] pw = pfPW.getPassword();
 		String inputPw = new String(pw);
 		
+		LocalDate now = LocalDate.now();
+		
+		LocalDate SeoulNow = LocalDate.now(ZoneId.of("Asia/Seoul"));
 	
 		
 		String login="";
@@ -160,59 +176,72 @@ public class CustomerMain {
 		dao.confirm(inputID, inputPw);
 		ArrayList<Dto> dtoList1 = dao.confirm(inputID, inputPw);
 		dtoList1.size();
-	
+		
+		
+	if(inputID.equals("admin")) {
 		if(dtoList1.size()>0) {
 			if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
-				JOptionPane.showMessageDialog(null, "로그인 성공" );
-				System.out.println(dtoList1.get(0).userid);
+				JOptionPane.showMessageDialog(null, SeoulNow+" 관리자 로그인 성공" );
 				ShareVar.userid=dtoList1.get(0).getUserid();
 				ShareVar.password=dtoList1.get(0).getUserpw();
 				ShareVar.name = dtoList1.get(0).getUsername();
 				ShareVar.phone=dtoList1.get(0).getUserphone();
-				String filepath = Integer.toString(ShareVar.filename);
-				Lobby();
+				String filepath = dtoList1.get(0).getFilepath();
+				clearcolumn();
+				//Lobby();
 			} else {
-				JOptionPane.showMessageDialog(null, "로그인 실패");	}
+				JOptionPane.showMessageDialog(null, "로그인 실패");	
+				clearcolumn();}
 		}else {
 			JOptionPane.showMessageDialog(null, "로그인 실패");
-		}
+			clearcolumn();}
+	}else {if(dtoList1.size()>0) {
+		if(inputID.equals(dtoList1.get(0).getUserid()) && inputPw.equals(dtoList1.get(0).getUserpw())) {
+			JOptionPane.showMessageDialog(null, SeoulNow+" 로그인 성공" );
+			ShareVar.userid=dtoList1.get(0).getUserid();
+			System.out.println(dtoList1.get(0).userid);
+			ShareVar.password=dtoList1.get(0).getUserpw();
+			ShareVar.name = dtoList1.get(0).getUsername();
+			ShareVar.phone=dtoList1.get(0).getUserphone();
+			String filepath = dtoList1.get(0).getFilepath();
+			System.out.println(filepath);
+			clearcolumn();
+			Lobby();
+		} else {
+			JOptionPane.showMessageDialog(null, "로그인 실패");	}
+	}else {
+		JOptionPane.showMessageDialog(null, "로그인 실패");}
+			
 	}
-	
-
-	
-
-	
+	}
 	private void Lobby() {
-			Lobby user = new Lobby();
-			user.setVisible(true);
-			CustomerMain main = new CustomerMain();
-			
-			
-			
-			
-	}
-	private JRadioButton getRdadmin() {
-		if (rdadmin == null) {
-			rdadmin = new JRadioButton("관리자");
-			rdadmin.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					admin();
-				}
-			});
-			rdadmin.setBounds(200, 173, 113, 23);
-		}
-		return rdadmin;
+		Lobby user = new Lobby();
+		user.setVisible(true);
+		CustomerMain main = new CustomerMain();
+		
+		
+		
+		
+}
+	private void clearcolumn() {
+
+		tfID.setText("");
+		pfPW.setText("");
 	}
 	
-	private void admin() {
-		if(tfId.getText()=="admin") {
-			if(rdadmin.isSelected()) {
-				confirm();
-			}
-			else {
-				JOptionPane.showMessageDialog(null, "관리자가 아니거나 잘못 입력하셨습니다.");
-			}
-		}
+	private void userRegistration() {
+		UserRegistration user = new UserRegistration();
+		user.setVisible(true);
+		
 		
 	}
+	private JLabel getLblimage() {
+		if (lblimage == null) {
+			lblimage = new JLabel(""); 
+			lblimage.setIcon(new ImageIcon(CustomerMain.class.getResource("/com/javalec/images/신발가게.jpg")));
+			lblimage.setBounds(0, -20,618 ,410 );
+		}
+		return lblimage;
+	}
 }
+	

@@ -9,6 +9,7 @@ public class Dto {
 	String username;
 	String userphone;
 	FileInputStream file;
+	String filepath;
 	
 	public FileInputStream getFile() {
 		return file;
@@ -20,6 +21,33 @@ public class Dto {
 
 	public Dto() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Dto(String userid, String userpw, String username, String userphone, String filepath) {
+		super();
+		this.userid = userid;
+		this.userpw = userpw;
+		this.username = username;
+		this.userphone = userphone;
+		this.filepath = filepath;
+	}
+
+	public String getFilepath() {
+		return filepath;
+	}
+
+	public void setFilepath(String filepath) {
+		this.filepath = filepath;
+	}
+
+	public Dto(String userid, String userpw, String username, String userphone, FileInputStream file, String filepath) {
+		super();
+		this.userid = userid;
+		this.userpw = userpw;
+		this.username = username;
+		this.userphone = userphone;
+		this.file = file;
+		this.filepath = filepath;
 	}
 
 	public Dto(String userid, String userpw, String username, String userphone) {

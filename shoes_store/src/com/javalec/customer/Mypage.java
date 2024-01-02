@@ -12,6 +12,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,9 +22,12 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.JobAttributes;
+import java.awt.Window;
 
 import javax.swing.JPasswordField;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -41,13 +46,13 @@ public class Mypage extends JDialog {
 	private JTextField tfPhone;
 	private JPasswordField pfPw;
 	private JPasswordField pfPw2;
-	private JButton btncheck;
 	private JButton btnCheckpw;
 	private JButton btnEdit;
 	private JButton btnFile;
 	private JTextField tfFilepath;
 	private JLabel lblImage;
-	private JButton btnNewButton;
+	
+	private int checkdialog=0;
 
 	/**
 	 * Launch the application.
@@ -73,7 +78,14 @@ public class Mypage extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				action1();
+				if(checkdialog==0) {
+					action1();
+					
+				}
+			}
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+			
 			}
 		});
 		setBounds(100, 100, 617, 443);
@@ -88,26 +100,55 @@ public class Mypage extends JDialog {
 		getContentPane().add(getTfPhone());
 		getContentPane().add(getPfPw());
 		getContentPane().add(getPfPw2());
-		getContentPane().add(getBtncheck());
 		getContentPane().add(getBtnCheckpw());
 		getContentPane().add(getBtnEdit());
 		getContentPane().add(getBtnFile());
 		getContentPane().add(getTfFilepath());
 		getContentPane().add(getLblImage());
-		getContentPane().add(getBtnNewButton());
 
 	}
 	
 	private void action1() {
-		tfId.setText(ShareVar.userid);
-		pfPw.setText(ShareVar.password);
-		tfName.setText(ShareVar.name);
-		tfPhone.setText(ShareVar.phone);
-		String filepath = Integer.toString(ShareVar.filename);
-		tfFilepath.setText(filepath);
-		lblImage.setIcon(new ImageIcon(filepath));
+		Dao dao = new Dao();
+		Dto dto =dao.Action2();
+		
+		tfId.setText(dto.getUserid());
+		tfName.setText(dto.getUsername());
+		tfPhone.setText(dto.getUserphone());
+		pfPw.setText(dto.getUserpw());
+		char[] pw = pfPw2.getPassword();
+		String pass = new String(pw);
+		
+		String filepath1 = dto.getFilepath();
+		//System.out.println(filepath1);
+		tfFilepath.setText(filepath1);
+	
+		ImageIcon icon =  new ImageIcon(filepath1);
+		Image i = icon.getImage();
+		Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon icons =  new ImageIcon(s);
+		lblImage.setIcon(icons);
 		lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-		File file = new File(filepath);
+		getContentPane().add(lblImage);
+		setVisible(true);
+		
+		
+
+		
+		
+		/*FileDialog fdopen = new FileDialog(this,"파일경로",FileDialog.LOAD);
+		fdopen.setVisible(true);
+		
+		String path = fdopen.getDirectory();
+		String name= fdopen.getFile();
+		
+		if(path!=null) {
+			tfFilepath.setText(path+name);
+		}*/
+	
+	
+		
+		
 	
 		
 	}
@@ -154,6 +195,7 @@ public class Mypage extends JDialog {
 	private JTextField getTfId() {
 		if (tfId == null) {
 			tfId = new JTextField();
+			tfId.setEditable(false);
 			tfId.setBounds(166, 63, 131, 25);
 			tfId.setColumns(10);
 		}
@@ -180,7 +222,6 @@ public class Mypage extends JDialog {
 	private JPasswordField getPfPw() {
 		if (pfPw == null) {
 			pfPw = new JPasswordField();
-			pfPw.setEditable(false);
 			pfPw.setBounds(166, 109, 152, 25);
 		}
 		return pfPw;
@@ -188,22 +229,9 @@ public class Mypage extends JDialog {
 	private JPasswordField getPfPw2() {
 		if (pfPw2 == null) {
 			pfPw2 = new JPasswordField();
-			pfPw2.setEditable(false);
 			pfPw2.setBounds(166, 161, 152, 25);
 		}
 		return pfPw2;
-	}
-	private JButton getBtncheck() {
-		if (btncheck == null) {
-			btncheck = new JButton("중복체크");
-			btncheck.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					check1();
-				}
-			});
-			btncheck.setBounds(339, 62, 91, 25);
-		}
-		return btncheck;
 	}
 	private JButton getBtnCheckpw() {
 		if (btnCheckpw == null) {
@@ -220,9 +248,11 @@ public class Mypage extends JDialog {
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new JButton("수정 완료");
+			btnEdit.setEnabled(false);
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					update();
+					
 				}
 			});
 			btnEdit.setBounds(227, 357, 91, 25);
@@ -238,7 +268,7 @@ public class Mypage extends JDialog {
 				}
 				}
 			);
-			btnFile.setBounds(448, 339, 91, 25);
+			btnFile.setBounds(433, 339, 91, 25);
 		}
 		return btnFile;}
 	
@@ -246,7 +276,7 @@ public class Mypage extends JDialog {
 		if (tfFilepath == null) {
 			tfFilepath = new JTextField();
 			tfFilepath.setEditable(false);
-			tfFilepath.setBounds(379, 374, 224, 21);
+			tfFilepath.setBounds(358, 374, 235, 21);
 			tfFilepath.setColumns(10);
 		}
 		return tfFilepath;
@@ -254,7 +284,7 @@ public class Mypage extends JDialog {
 	private JLabel getLblImage() {
 		if (lblImage == null) {
 			lblImage = new JLabel("");
-			lblImage.setBounds(379, 167, 212, 164);
+			lblImage.setBounds(358, 167, 235, 139);
 		}
 		return lblImage;
 	}
@@ -267,18 +297,38 @@ public class Mypage extends JDialog {
 		String name = tfName.getText();
 		String phone =tfPhone.getText();
 		String login ="";
+		
+		
+		if(tfId.getText().length()==0) {
+			JOptionPane.showMessageDialog(null, "아이디를 입력해주세요");
+		}
+		else {
+			check3();
+		}}
+	
+	private void check3() {
+		String id = tfId.getText();
+		char[] pw = pfPw.getPassword();
+		String pass = new String(pw);
+		char[] pw1 = pfPw2.getPassword();
+		String pass2 = new String(pw1);
+		String name = tfName.getText();
+		String phone =tfPhone.getText();
+		String login ="";
+		int i=0;
+		
 		Dao dao = new Dao(id, pass);
 		boolean result = dao.check();
 		
-		if(id==ShareVar.userid) {
-			JOptionPane.showMessageDialog(null, "이전 아이디와 동일합니다");
-		}
-		else if(result==false) {
-			JOptionPane.showMessageDialog(null, "중복입니다");
+		if(result==false) {
+			JOptionPane.showMessageDialog(null, "이전 아이디이거나 중복입니다");
 		}else {
 			JOptionPane.showMessageDialog(null, "사용가능합니다");
+			tfId.setEditable(false);
 			pfPw.setEditable(true);
 			pfPw2.setEditable(true);
+			btnEdit.setEnabled(true);
+			
 		}	
 		}
 	private void pwcheck() {
@@ -286,20 +336,37 @@ public class Mypage extends JDialog {
 		String pass = new String(pw);
 		char[] pw1 = pfPw2.getPassword();
 		String pass2 = new String(pw1);
+		int i=1;
+		final String SAMEPT="(\\w)\\1\\1";
+		Pattern ThreeChar=null;
+		ThreeChar = Pattern.compile("(\\p{Alnum})\\1{2,}");
+		Matcher matcher1;
+		matcher1 = ThreeChar.matcher(pass);
 		
-		if(pass.length()==0||pass2.length()==0) {
-			JOptionPane.showMessageDialog(null, "비밀번호를 입력하세요");
+		if(pass.length()<4||pass2.length()>8) {
+			JOptionPane.showMessageDialog(null, "비밀번호를 4자리 이상 8자리 미만으로 입력하세요");
+			checkdialog=1;
 		}
-		
+		else if(matcher1.find()) {
+			JOptionPane.showMessageDialog(null, "동일한 문자나 숫자를 3개이상 사용하실 수 없습니다.");
+			checkdialog=1;
+		}
 		else if(pass.equals(pass2)) {
 			JOptionPane.showMessageDialog(null, "비밀번호가 일치합니다");
+			checkdialog=1;
 			tfName.setEditable(true);
 			tfPhone.setEditable(true);
+			pfPw.setEditable(false);
+			pfPw2.setEditable(false);
+			btnEdit.setEnabled(true);
 			
 		}else {
-			JOptionPane.showMessageDialog(null, "비밀번호가 틀립니다");
+			JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다");
+			checkdialog=1;
 		}
 	}
+	
+	
 	private void update() {
 		String id =tfId.getText();
 		char[] pass =pfPw.getPassword();
@@ -308,6 +375,28 @@ public class Mypage extends JDialog {
 		String pw1 =  new String(pass1);
 		String name= tfName.getText();
 		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
+		
+		
+		if(id.length()!=0 &&pw.length()!=0&&pw1.length()!=0 &&name.length()!=0&& phone.length()!=0&&file1.length()!=0) {
+			update2();
+		
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "잘못된 부분이 있습니다.");}}
+
+	
+	private void update2() {
+		String id =tfId.getText();
+		char[] pass =pfPw.getPassword();
+		String pw=new String(pass);
+		char[] pass1=pfPw2.getPassword();
+		String pw1 =  new String(pass1);
+		String name= tfName.getText();
+		String phone = tfPhone.getText();
+		String file1 = tfFilepath.getText();
+		
+		
 
 		FileInputStream input = null;
 		File file = new File(tfFilepath.getText());
@@ -317,53 +406,78 @@ public class Mypage extends JDialog {
 			e.printStackTrace();
 		}
 		
-		Dao dao = new Dao(id,pw,name,phone,input);
+		Dao dao = new Dao(id,pw,name,phone,input,file1);
 		boolean result = dao.updateAction();
 		if(result==true) {
 			JOptionPane.showMessageDialog(null, tfName.getText()+"님의 수정이 완료되었습니다.");
+			dispose();
 			
 		}else {
 			JOptionPane.showMessageDialog(null, "잘못된 부분이 없는지 확인하세요");
 		}}
-		private void Filepath() {
+
+		/*private void Filepath() {
 			JFileChooser chooser = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG","PNG","BMP", "jpg","png","bmp");
-			chooser.setFileFilter(filter);
+			chooser.setFileFilter(filter);*/
 			
-			int ret = chooser.showOpenDialog(null);
-			if(ret !=JFileChooser.APPROVE_OPTION) {
-				JOptionPane.showMessageDialog(null, "파일을 선택하지 않았습니다.");
+			//int result = chooser.showOpenDialog(null);
+			//if(result ==JFileChooser.APPROVE_OPTION) {
+				/*String filepath = file
 				return;
 			}
 			String filepath = chooser.getSelectedFile().getPath();// 파일경로 가져오기
 			tfFilepath.setText(filepath);
 			lblImage.setIcon(new ImageIcon(filepath));
 			lblImage.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-	private JButton getBtnNewButton() {
-		if (btnNewButton == null) {
-			btnNewButton = new JButton("아이디 변경X");
-			btnNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					change();
+			
+			File file = new File(filepath);
+			file.delete();
+		
+		}*/
+				
+				/*int result = chooser.showOpenDialog(null);
+				if(result ==JFileChooser.APPROVE_OPTION) {
+					String filepath = chooser.getSelectedFile().getAbsolutePath();
+					System.out.println("selected file"+filepath);
+					tfFilepath.setText(filepath);
+				
+				lblImage.setIcon(new ImageIcon(filepath));
+				lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				btnEdit.setEnabled(true);}
+				
+			}*/
+			
+			private void Filepath() {
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG","PNG","BMP", "jpg","png","bmp");
+				chooser.setFileFilter(filter);
+				
+				int ret = chooser.showOpenDialog(null);
+				if(ret!=JFileChooser.APPROVE_OPTION&&tfFilepath.getText().length()==0) {
+					JOptionPane.showMessageDialog(null, "파일을 선택하지 않았습니다.");
+					checkdialog=1;
+					return;
 				}
-			});
-			btnNewButton.setBounds(442, 62, 131, 25);
-		}
-		return btnNewButton;
-	}
-	private void change() {
-		String id =tfId.getText();
-		char[] pass =pfPw.getPassword();
-		String pw=new String(pass);
-		char[] pass1=pfPw2.getPassword();
-		String pw1 =  new String(pass1);
-		String name= tfName.getText();
-		String phone = tfPhone.getText();
+				String FILEPATH = chooser.getSelectedFile().getPath();
+				tfFilepath.setText(FILEPATH);
+				ImageIcon icon =  new ImageIcon(FILEPATH);
+				Image i = icon.getImage();
+				Image s = i.getScaledInstance(235, 139, java.awt.Image.SCALE_SMOOTH);
+				ImageIcon icons =  new ImageIcon(s);
+				lblImage.setIcon(icons);
+				lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+				getContentPane().add(lblImage);
+				setVisible(true);
+				checkdialog=1;
+				}
+	
+	private void change1() {
 		
 		tfId.setEditable(false);
+		btnCheckpw.setEnabled(true);
 		pfPw.setEditable(true);
 		pfPw2.setEditable(true);
-	}
-	
-		}
+	}}
+		
