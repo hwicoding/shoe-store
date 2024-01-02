@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.javalec.purchase.OrderPage;
+import com.javalec.util.ShareVar;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -19,10 +20,15 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SearchPage extends JDialog {
 
@@ -62,6 +68,7 @@ public class SearchPage extends JDialog {
 	 * Create the dialog.
 	 */
 	public SearchPage() {
+		getContentPane().setBackground(new Color(255, 128, 0));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -86,8 +93,10 @@ public class SearchPage extends JDialog {
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
-			lblNewLabel = new JLabel("로고 이미지");
-			lblNewLabel.setBounds(246, 25, 165, 49);
+			lblNewLabel = new JLabel("");
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setIcon(new ImageIcon(SearchPage.class.getResource("/com/javalec/images/shoes_logo.png")));
+			lblNewLabel.setBounds(221, 0, 205, 179);
 		}
 		return lblNewLabel;
 	}
@@ -110,14 +119,14 @@ public class SearchPage extends JDialog {
 			cbSelection = new JComboBox();
 			cbSelection.setEditable(true);
 			cbSelection.setModel(new DefaultComboBoxModel(new String[] {"브랜드", "제품명", "사이즈"}));
-			cbSelection.setBounds(23, 143, 95, 23);
+			cbSelection.setBounds(23, 166, 95, 23);
 		}
 		return cbSelection;
 	}
 	private JTextField getTfSelection() {
 		if (tfSelection == null) {
 			tfSelection = new JTextField();
-			tfSelection.setBounds(144, 144, 343, 21);
+			tfSelection.setBounds(144, 167, 343, 21);
 			tfSelection.setColumns(10);
 		}
 		return tfSelection;
@@ -125,7 +134,14 @@ public class SearchPage extends JDialog {
 	private JButton getBtnQuery() {
 		if (btnQuery == null) {
 			btnQuery = new JButton("검색");
-			btnQuery.setBounds(531, 143, 95, 23);
+			btnQuery.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					conditionQuery();
+					
+				}
+			});
+			btnQuery.setBounds(531, 166, 95, 23);
 		}
 		return btnQuery;
 	}
@@ -141,10 +157,14 @@ public class SearchPage extends JDialog {
 	private JTable getInnerTable() {
 		if (innerTable == null) {
 			innerTable = new JTable();
+			innerTable.setCellSelectionEnabled(true);
 			innerTable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					tableClick();
+
+					if(e.getButton()==1) {
+						tableClick();
+					}
 				}
 			});
 			innerTable.setFillsViewportHeight(true);
@@ -174,30 +194,25 @@ public class SearchPage extends JDialog {
 	
 //	Table 초기화 하기
 	private void tableInit() {
-		outerTable.addColumn("NO");
 		outerTable.addColumn("브랜드");
 		outerTable.addColumn("상품명");
 		outerTable.addColumn("가격");
-		outerTable.setColumnCount(4);
+		outerTable.setColumnCount(3);
 		
 		
 //	Table Column 크기 정하기
+		
 		int colNo = 0;
 		TableColumn col = innerTable.getColumnModel().getColumn(colNo);
-		int width = 50;
+		int width = 200;
 		col.setPreferredWidth(width);
-	
+		
 		colNo = 1;
 		col = innerTable.getColumnModel().getColumn(colNo);
 		width = 200;
 		col.setPreferredWidth(width);
 		
 		colNo = 2;
-		col = innerTable.getColumnModel().getColumn(colNo);
-		width = 200;
-		col.setPreferredWidth(width);
-		
-		colNo = 3;
 		col = innerTable.getColumnModel().getColumn(colNo);
 		width = 200;
 		col.setPreferredWidth(width);
@@ -221,9 +236,8 @@ public class SearchPage extends JDialog {
 		int listCount = dtoList.size();
 		
 		for(int i = 0; i < listCount; i++) {
-			String temp = Integer.toString(dtoList.get(i).getSeqno());
-			String[] qTxt = {temp,
-									 dtoList.get(i).getBrand(),
+
+			String[] qTxt = {dtoList.get(i).getBrand(),
 									 dtoList.get(i).getName(),
 									 Integer.toString(dtoList.get(i).getPrice())};
 			outerTable.addRow(qTxt);
@@ -232,37 +246,67 @@ public class SearchPage extends JDialog {
 
 	
 //	Table 에서 Row 를 click 했을 경우
-	private void tableClick() {
-		int i = innerTable.getSelectedRow();
-		String tkSequence = (String)innerTable.getValueAt(i, 0);
-		int wkSequence = Integer.parseInt(tkSequence);
+	private List<String> tableClick() {
+		int i = innerTable.getSelectedRow();	
+		List<String> array = new ArrayList<>();
 		
-		ProductDAO dao = new ProductDAO(wkSequence);
+		String tkBrand = (String)innerTable.getValueAt(i, 0);
+		String tkName = (String)innerTable.getValueAt(i, 1);
+		int tkPrice = Integer.parseInt((String)innerTable.getValueAt(i, 2));
+		
+		
+		ProductDAO dao = new ProductDAO(tkBrand, tkName, tkPrice);
 		ProductDTO dto = dao.tableClick();
 		
-		closeWindow();
+		array.add(dto.getBrand());
+		array.add(dto.getName());
+		array.add(Integer.toString(dto.getPrice()));
 		
-		BuyPage buyPage = new BuyPage();
-		buyPage.selectByinfo(wkSequence);
-		
-		
-		//buyPage(wkSequence);	
-		
-	}
-	
-	private void closeWindow( ) {
 		dispose();
 		
+//		Buy Page 로 정보 보내기
 		BuyPage buyPage = new BuyPage();
 		buyPage.setVisible(true);
+		buyPage.selectByinfo(array);
+		
+		return array;
+		
 	}
 	
-//	private void buyPage(int seq) {
-//		
-//		System.out.println(seq);
-//		
-//	}
-	
+	private void conditionQuery() {
+		
+		int i = cbSelection.getSelectedIndex();
+		String conditionQueryName = "";
+		String tfSelect = tfSelection.getText();
+		
+		switch(i) {
+		case 0 :
+			conditionQueryName = "obrand";
+			break;
+		case 1 :
+			conditionQueryName = "oname";
+			break;
+		case 2 :
+			conditionQueryName = "oprice";
+			break;
+		default :
+			break;
+		}
+		
+		ProductDAO dao = new ProductDAO();
+		tableInit();
+		ArrayList<ProductDTO> dtoList =  dao.conditionQueryAction(conditionQueryName, tfSelect);
+		int listCount = dtoList.size();
+		
+		for(int j = 0; j < listCount; j++) {
+
+			String[] qTxt = {dtoList.get(j).getBrand(),
+									 dtoList.get(j).getName(),
+									 Integer.toString(dtoList.get(j).getPrice())};
+			outerTable.addRow(qTxt);
+		}
+		
+	}
 
 	
 }
