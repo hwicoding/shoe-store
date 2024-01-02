@@ -734,7 +734,7 @@ public class AdminOrderPage extends JDialog {
 	private void deleteAction() {
 		int seqno = Integer.parseInt(tfSeq.getText());
 		AdminOrderDao dao = new AdminOrderDao(seqno);
-		if(dao.deleteAction() == true) {
+		if(dao.deleteAction() == true && dao.deleteActionSec() == true) {
 			JOptionPane.showMessageDialog(null, "해당 제품이 삭제되었습니다.");
 		} else {
 			JOptionPane.showMessageDialog(null, "입력 중 문제 발생했습니다.");

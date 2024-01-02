@@ -187,7 +187,6 @@ public class AdminOrderDao {
 	public boolean deleteAction() {
 		PreparedStatement ps = null;
 		String query = "delete from orderProd where oseq = "+oseq;
-		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(url, id, pw);
@@ -195,13 +194,32 @@ public class AdminOrderDao {
 			
 			ps.executeUpdate();
 			
-			conn.close();
+			conn.close(); 
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
+	
+	public boolean deleteActionSec() {
+		PreparedStatement ps = null;
+		String query = "delete from product where oseq = "+oseq;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(url, id, pw);
+			ps = conn.prepareStatement(query);
+			
+			ps.executeUpdate();
+			
+			conn.close(); 
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	
 	//브랜드로 검색
 	public ArrayList<AdminOrderDto> searchConditionToBrand(String str) {
