@@ -114,12 +114,12 @@ public class ProductDAO {
 				
 				while(input.read(buffer)>0) {
 					output.write(buffer);
-				}
+			}
 				
 				dto = new ProductDTO(wkSeqno, wkSize, wkCount, wkPrice, wkBrand, wkName, wkColor);
 			}
 			
-			conn_mysql.close();
+			conn_mysql.close(	);
 			
 			
 		}catch (Exception e) {
