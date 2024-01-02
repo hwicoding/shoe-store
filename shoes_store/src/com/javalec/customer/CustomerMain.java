@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class CustomerMain {
 
@@ -129,6 +131,14 @@ public class CustomerMain {
 	private JPasswordField getPfPW() {
 		if (pfPW == null) {
 			pfPW = new JPasswordField();
+			pfPW.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+						login();
+					}
+				}
+			});
 			pfPW.setBounds(187, 288, 174, 22);
 		}
 		return pfPW;
